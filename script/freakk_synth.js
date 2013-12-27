@@ -50,13 +50,17 @@ $(document).ready(function () {
       }
 
     /* VCO */
-    var volume = 1;
-    
     var vco = context.createOscillator();
-    vco.type = vco.SINE;
+    /* vco.type = vco.SINE; */
+    vco.type = parseInt($('#knob-osc1Type').attr('data-value'));;
     vco.frequency.value = this.frequency;
     vco.start(0);
- 
+    
+    var volume = 1;
+    var octave = 2;
+    
+    var noteOn = 0;
+    
     /* VCA */
     var vca = context.createGain();
     vca.gain.value = 0;
@@ -66,15 +70,42 @@ $(document).ready(function () {
     vca.connect(context.destination);
     
     //vco.noteOn(0); // Play instantly
-    var octave = 0;
+    //var octave = 2;
     var noteToFrequency = function(note) { return  Math.pow(2, (note-58) / 12) * 440.0; }
     
     var playNote = function(keyNum){
         vco.noteOn(0);
-        vco.frequency.value = noteToFrequency( keyNum );
+        //octave = parseInt( $('#knob-octave').attr('data-value') );
+        vco.frequency.value = noteToFrequency( keyNum  + 12 * octave );
         console.log( "freq = " + vco.frequency.value );
-        vca.gain.value = volume * parseFloat( $('#kn-volume').attr('data-value') )/100;
+        //vca.gain.value = volume * parseFloat( $('#knob-volume').attr('data-value') )/100;
+        vca.gain.value = volume ;
     }
+    
+    // **********************************************************************
+    // INIT VALUES & KNOBS
+    // **********************************************************************
+
+    // Set knobs rotation
+    $.each( $('.knobHolder'), function() {
+        val = $(this).attr('data-value');
+        switch( parseInt($(this).attr('data-knobType')) ){
+            case 0:
+                $('#'+ $(this).attr('id') +' .knobIndicator').css('transform', "rotate("+val*280/100+"deg)");
+                break;
+            case 1:
+                steps = parseInt( $('#'+ $(this).attr('id') ).attr("data-steps") );
+                $('#'+ $(this).attr('id') +' .knobIndicator').css('transform', "rotate("+parseFloat(280.0*(val/steps))+"deg)");
+                break;
+        }
+    });
+    
+    octave = parseInt($('#knob-octave').attr('data-value'));
+    volume = parseFloat($('#knob-volume').attr('data-value'))/100;
+    console.log("vol: "+ volume);
+    console.log("oct: "+ octave);
+    knobEditing = false;
+    
     // **********************************************************************
     // KEYBOARD DRAW
     // **********************************************************************
@@ -114,45 +145,64 @@ $(document).ready(function () {
     $('.whiteKey').css("width", (whiteKeyWidth-2)+"px"   );
     $('.blackKey').css("width", blackKeyWidth+"px");
 
-
     
-    // Keyboard press
- 
+    // ******************************************************
+    // KEYBOARD EVENTS
+    // ******************************************************
+    
     //var keyValues = { 90:"c", 83:"c#", 88:"d", 68:"d#", 67:"e", 86:"f", 71:"f#" , 66:"g", 72:"g#", 78:"a", 74:"a#", 77:"b"};
-    var keyValues = { 90:1, 83:2, 88:3, 68:4, 67:5, 86:6, 71:7 , 66:8, 72:9, 78:10, 74:11, 77:12};
-    var noteNames = new Array("c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b");
+    var noteNames = new Array("c",   "c#",  "d",  "d#",   "e",   "f",   "f#",  "g",   "g#",  "a",   "a#",  "b");  
+    var keyValues =         { 90:1,  83:2,  88:3,  68:4,  67:5,  86:6,  71:7 , 66:8,  72:9,  78:10, 74:11, 77:12,
+                              81:13, 50:14, 87:15, 51:16, 69:17, 82:18, 53:19, 84:20, 54:21, 89:22, 55:23, 85:24,
+                              73:25, 57:26, 79:27, 48:28 };
+
     keyValues[70] = -1;
     keyValues[75] = -1;
+    keyValues[52] = -1;
+    keyValues[56] = -1;
 
     var keyPressed = -1;
     $(document).keydown(function(event){
         keyPressed = event.which;
         note = (keyValues[keyPressed]);
-        if(keyPressed == 40 && octave>0) octave--;
-        if(keyPressed == 38 && octave<5) octave++;
-        console.log( note + " ; " + noteNames[ keyValues[keyPressed] ] +octave.toString() );
+        if(keyPressed == 40 ) {
+            octave = parseInt( $('#knob-octave').attr("data-value") );
+            if( octave>0 ) $('#knob-octave').attr('data-value' , --octave);
+            steps = parseInt( $('#knob-octave').attr("data-steps") );
+            $('#knob-octave  .knobIndicator').css('transform', "rotate("+parseFloat(280.0*(octave/steps))+"deg)");            
+            }
+        if(keyPressed == 38 ) {
+            octave = parseInt( $('#knob-octave').attr("data-value") );
+            if( octave<5 ) $('#knob-octave').attr('data-value' , ++octave);
+            steps = parseInt( $('#knob-octave').attr("data-steps") );
+            $('#knob-octave  .knobIndicator').css('transform', "rotate("+parseFloat(280.0*(octave/steps))+"deg)");            
+        }
+        //console.log( note + " ; " + noteNames[ keyValues[keyPressed] ] +octave.toString() );
         vco.frequency.value = noteToFrequency(note); // set frequency
         console.log( "freq = " + vco.frequency.value );
         value = keyValues[keyPressed];
-        if(value>0) playNote(note + 12 * octave);
+        if(value>0) playNote(note);
         //alert(keyPressed);
+        console.log(noteOn);
     });
     
-    $(document).keyup(function(event){ vca.gain.value = 0; });
+    $(document).keyup(function(event){ 
+        vca.gain.value = 0;
+    });
     var isMouseDown = false;
 
     
     $( ".key" ).mouseover( function() { 
         if(isMouseDown) {
             $(this).addClass("active");
-            playNote( parseInt($(this).attr("data-keyNum")) + 12 * octave );
+            playNote( parseInt($(this).attr("data-keyNum")) );
         }
     });
 
     $('.key').mousedown(function() {
         isMouseDown = true;
         $(this).addClass("active"); 
-        playNote( parseInt($(this).attr("data-keyNum")) + 12 * octave );
+        playNote( parseInt($(this).attr("data-keyNum"))  );
         })
         .mouseup(function() {
         isMouseDown = false;
@@ -164,8 +214,22 @@ $(document).ready(function () {
         vca.gain.value = 0;
     });
     
+    // ******************************************************
+    // KNOB EVENTS
+    // ******************************************************
     
-    
-    
+    $('.knobHolder').mousemove( function(){
+        var role = $(this).attr('data-role');
+        if( role == 'volume' ){
+            //volume = parseInt( $(this).attr('data-value')/100 );
+            volume = parseFloat( $('#knob-volume').attr('data-value') )/100;
+        }
+        else if( role == 'octave' ){
+            octave = parseInt( $(this).attr('data-value') );
+        }
+        else if( role == 'osc1Type' ){
+            vco.type = parseInt( $(this).attr('data-value') );
+        }
+    });
     
     });
