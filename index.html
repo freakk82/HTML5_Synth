@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Freakk Synth</title>
+    <link rel="stylesheet" href="css/freakk_synth.css">
+    <link rel="stylesheet" href="css/knob.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <!-- page content -->
+
+    <div id="knobContainer">
+        <div class="knobHolder"><div id="kn-volume" class="knob" data-value="0"></div><div class="knobCaption">VOLUME</div></div>
+        <div class="knobHolder"><div id="kn-pitch" class="knob" data-value="0"></div><div class="knobCaption">PITCH</div></div>
+    </div>
+    <div id="keyboardContainer">
+        <div id="keyboard">
+        </div>
+    </div>
+    
+    <script src="script/AudioContextMonkeyPatch.js"></script>
+    <script src="script/knob.js"></script>
+    <script src="script/freakk_synth.js" type="text/javascript"></script>
+    
+  </body>
+</html>
