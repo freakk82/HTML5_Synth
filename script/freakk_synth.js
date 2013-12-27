@@ -129,15 +129,17 @@ $(document).ready(function () {
     for( var i=0; i<numKeys; i++){
         j = i%12;
         if( j == 1 || j == 3 || j == 6 || j == 8 || j == 10  ){
-            keyId = "bk" + bk;
+            /* keyId = "bk" + bk; */
+            keyId = "k" + i;
             posX = (wk)*whiteKeyWidth - blackKeyWidth/2;
-            $('#keyboard').append('<div id="bk'+bk+'" data-keyNum="'+(i+1)+'" class="key blackKey" ></div>');
+            $('#keyboard').append('<div id="'+keyId+'" data-keyNum="'+(i+1)+'" class="key blackKey" ></div>');
             $("#"+keyId).css("left" , posX);
             bk++;
         }
         else{
-            keyId = "wk" + wk;
-            $('#keyboard').append('<div id="wk'+wk+'" data-keyNum="'+(i+1)+'" class="key whiteKey" ></div>');
+            /* keyId = "wk" + wk; */
+            keyId = "k" + i;
+            $('#keyboard').append('<div id="'+keyId+'" data-keyNum="'+(i+1)+'" class="key whiteKey" ></div>');
             $("#"+keyId).css("left" , wk * (whiteKeyWidth));
             wk++;
         }
@@ -184,10 +186,12 @@ $(document).ready(function () {
         if(value>0) playNote(note);
         //alert(keyPressed);
         console.log(noteOn);
+        $('#k'+ (keyValues[event.which] - 1)).addClass('active');
     });
     
     $(document).keyup(function(event){ 
         vca.gain.value = 0;
+        $('#k'+ (keyValues[event.which] -1)).removeClass('active');
     });
     var isMouseDown = false;
 

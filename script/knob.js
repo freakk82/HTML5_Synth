@@ -24,6 +24,7 @@ $(".knobHolder").mousedown(function(e) {
 });
 
 var setKnob = function( offsetY ){
+    knobActiveInitialValue = parseInt($('#'+knobActive).attr('data-value'));
     switch( parseInt($('#'+knobActive).attr('data-knobType')) ){
             case typeContinuous:
                 knobActiveValue = knobActiveInitialValue + 100*offsetY/maxOffset;
@@ -33,13 +34,17 @@ var setKnob = function( offsetY ){
                 break;
             case typeStep:  // It has to be better, smoother, the zero area is too large
                 steps = parseInt( $('#'+knobActive).attr("data-steps") );
-                /* knobActiveValue += 100* parseInt( (knobActiveInitialValue + offsetY/maxOffset ) / steps); */
-                variation = parseInt( (offsetY/(maxOffset/steps) ));
-                knobActiveValue += variation;
-                console.log( "offY: " + offsetY + "var: " + variation );
+                stepLenght = maxOffset/ steps;
+                variation =  100*offsetY/maxOffset;
+                if(variation > 100) variation = 100;
+                else if (variation < -100) variation = -100;
+                step = parseInt(variation /(stepLenght));
+                
+                knobActiveValue = step;
                 if(knobActiveValue > steps) knobActiveValue = steps;
-                else if (knobActiveValue < 0) knobActiveValue = 0;
-                $('#'+knobActive+' .knobIndicator').css('transform', "rotate("+parseFloat(280.0*(knobActiveValue/steps))+"deg)");
+                if(knobActiveValue < 0) knobActiveValue = 0;
+                console.log("step: "+step+" ; value: "+ knobActiveValue);
+                $('#'+knobActive+' .knobIndicator').css('transform', "rotate("+280*(knobActiveValue/steps)+"deg)");
                 break;
         }
     $('#'+knobActive).attr('data-value', knobActiveValue );
