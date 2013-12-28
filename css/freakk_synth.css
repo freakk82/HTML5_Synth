@@ -37,9 +37,13 @@ a { text-decoration: none; display: block; }
     margin: 0;
     height: 200px;
     background: #000;
-    border-radius: 2px;
+    /* border-radius: 2px; */
     border: 1px solid rgba(0,0,0,0.3);
     
+    -moz-box-shadow:inset 1px 6px 23px #000000;
+    -webkit-box-shadow:inset 1px 6px 23px #000000;
+    box-shadow:inset 1px 6px 23px #000000;
+
     background: rgba(120,120,120,1);
     background: -moz-linear-gradient(top, rgba(120,120,120,1) 0%, rgba(74,74,74,1) 49%, rgba(0,0,0,1) 100%);
     background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(120,120,120,1)), color-stop(49%, rgba(74,74,74,1)), color-stop(100%, rgba(0,0,0,1)));
@@ -86,7 +90,10 @@ overflow: hidden;
     border-bottom-right-radius: 4px;
     height: 60%;
     z-index: 20;
-    box-shadow: 4px 1px 4px #999;
+}
+
+.key {
+     box-shadow:0px  4px  4px rgba(0,0,0,0.3);
 }
 
 .key.active{
@@ -95,45 +102,55 @@ overflow: hidden;
 }
 
 .frame_piece{
-    /* background-image: url('../img/wood_texture_hor.svg'); */
-    background-size: 100%;
-    border-radius: 4px;
+    -webkit-border-radius: 8px;
+    -webkit-border-bottom-right-radius: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -moz-border-radius: 8px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    border-radius: 8px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
     border: 1px solid rgba(0,0,0,0.3);
+    
+    
 }
 .frame_top{
     position: relative;
     display: block;
     width: 100%;
     height: 40px;
-    
-    background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 11%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 89%, rgba(0,0,0,0) 100%), url('../img/wood_texture_hor.svg'); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(11%,rgba(0,0,0,0)), color-stop(50%,rgba(0,0,0,0.2)), color-stop(89%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0))), url('../img/wood_texture_hor.svg'); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_hor.svg'); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_hor.svg'); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_hor.svg'); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_hor.svg'); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
-    
-    background-size: 100%;
+    border-radius:0;
+    background: #8e120e; /* Old browsers */
+    background: -moz-linear-gradient(top,  #8e120e 0%, #e20f0f 3%, #e82d10 50%, #c40d0d 97%, #820202 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8e120e), color-stop(3%,#e20f0f), color-stop(50%,#e82d10), color-stop(97%,#c40d0d), color-stop(100%,#820202)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8e120e', endColorstr='#820202',GradientType=0 ); /* IE6-9 */
+
 }
 
 .frame_left, .frame_right{
-    
-    background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 11%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 89%, rgba(0,0,0,0) 100%), url('../img/wood_texture_vert.svg'); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,0,0)), color-stop(11%,rgba(0,0,0,0)), color-stop(50%,rgba(0,0,0,0.2)), color-stop(89%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0))), url('../img/wood_texture_vert.svg'); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_vert.svg'); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_vert.svg'); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_vert.svg'); /* IE10+ */
-    background: linear-gradient(to right,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 11%,rgba(0,0,0,0.2) 50%,rgba(0,0,0,0) 89%,rgba(0,0,0,0) 100%), url('../img/wood_texture_vert.svg'); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 */
+    box-shadow: 4px 4px 4px #999;
+    background: #8e120e; /* Old browsers */
+    background: -moz-linear-gradient(left,  #8e120e 0%, #e20f0f 3%, #e82d10 50%, #c40d0d 97%, #820202 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#8e120e), color-stop(3%,#e20f0f), color-stop(50%,#e82d10), color-stop(97%,#c40d0d), color-stop(100%,#820202)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* IE10+ */
+    background: linear-gradient(to right,  #8e120e 0%,#e20f0f 3%,#e82d10 50%,#c40d0d 97%,#820202 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8e120e', endColorstr='#820202',GradientType=1 ); /* IE6-9 */
 
-    background-size: 100%;
 }
 
 .center_section{
     width: -webkit-calc(100% -80px);
     width: -moz-calc(100% -80px);
 }
+.frame_left { border-top-right-radius: 0;}
+.frame_right { border-top-left-radius: 0;}
 
 .frame_left, .center_section, .frame_right {
     float: left;

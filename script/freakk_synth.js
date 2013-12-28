@@ -228,6 +228,7 @@ $(document).ready(function () {
         isMouseDown = false;
         vca.gain.value = 0;
         vca2.gain.value = 0;
+        
     });
     
     $( ".key" ).mouseleave(function() { 
