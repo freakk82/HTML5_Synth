@@ -34,7 +34,7 @@ $(document).ready(function () {
     
     console.log("Browser: " + BrowserName);
     if(isAndroid) alert(BrowserName+" on "+OSName);
-    
+
     
     // **********************************************************************
     // SYNTH CORE
@@ -174,6 +174,12 @@ $(document).ready(function () {
     $('.whiteKey').css("width", (whiteKeyWidth-2)+"px"   );
     $('.blackKey').css("width", blackKeyWidth+"px");
 
+        
+    // **********************************************************************
+    // DRAW SYNTH FRAME
+    // **********************************************************************
+    $('.frame_left').css('height', $('.center_section').height()+"px" );
+    $('.frame_right').css('height', $('.center_section').height()+"px" );    
     
     // ******************************************************
     // KEYBOARD EVENTS
