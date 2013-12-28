@@ -99,7 +99,7 @@ $(document).ready(function () {
         vca.gain.value = volume1 ;
         // play osc 2
         vco2.noteOn(0);
-        vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 );
+        vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 ) * ( 1 + detune2 *  ( Math.pow(2, 7 / 12) -1 ) ); //max detune up or down a fifth
         console.log( "freq = " + vco2.frequency.value );
         vca2.gain.value = volume2 ;
     }
@@ -278,7 +278,9 @@ $(document).ready(function () {
         }
         else if( id == 'knob-detune1' ){
            detune1 = (parseInt( $(this).attr('data-value') ) - 50 ) * .02;
-           console.log('det1: '+detune1);
+        }
+        else if( id == 'knob-detune2' ){
+           detune2 = (parseInt( $(this).attr('data-value') ) - 50 ) * .02;
         }
     });
     
