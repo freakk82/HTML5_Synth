@@ -1,0 +1,39 @@
+.knob{
+    width: 48px;
+    height: 48px;
+    background: url('../img/knob_bg.svg');
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.knobIndicator{
+    width: 48px;
+    height: 48px;
+    background: url('../img/knob_indicator.svg');
+    position: absolute;
+    top: 0;
+    left:0;
+}
+.knobHolder{
+    width: 48px;
+    height: 68px;
+    float: left;
+    margin: 10px;
+    position: relative;
+}
+
+.knobCaption{
+    width: 100%;
+    height: 28px;
+    font-size: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+.knobB{
+    width: 48px;
+    height: 48px;
+    /* background: url('../img/knob01.png'); */
+    background: url('../img/metal.svg');
+    background-repeat: no-repeat;
+    cursor: pointer;
+}

@@ -30,7 +30,7 @@ var setKnob = function( offsetY ){
                 knobActiveValue = knobActiveInitialValue + 100*offsetY/maxOffset;
                 if(knobActiveValue > 100) knobActiveValue = 100;
                 else if (knobActiveValue < 0) knobActiveValue = 0;
-                $('#'+knobActive+' .knobIndicator').css('transform', "rotate("+knobActiveValue*280/100+"deg)");
+                $('#'+knobActive+' .marker_container').css('transform', "rotate("+knobActiveValue*280/100+"deg)");
                 break;
             case typeStep:  // It has to be better, smoother, the zero area is too large
                 steps = parseInt( $('#'+knobActive).attr("data-steps") );
@@ -44,7 +44,7 @@ var setKnob = function( offsetY ){
                 if(knobActiveValue > steps) knobActiveValue = steps;
                 if(knobActiveValue < 0) knobActiveValue = 0;
                 console.log("step: "+step+" ; value: "+ knobActiveValue);
-                $('#'+knobActive+' .knobIndicator').css('transform', "rotate("+280*(knobActiveValue/steps)+"deg)");
+                $('#'+knobActive+' .marker_container').css('transform', "rotate("+280*(knobActiveValue/steps)+"deg)");
                 break;
         }
     $('#'+knobActive).attr('data-value', knobActiveValue );
