@@ -104,33 +104,17 @@ $(document).ready(function () {
         vca2.gain.value = volume2 ;
     }
     
-    // **********************************************************************
-    // INIT VALUES & KNOBS
-    // **********************************************************************
+    // DELAY
+    // ***************************************
 
-    // Set knobs rotation
-     $.each( $('.knob'), function() {
-        $(this).append('<div class="metal radial"></div><div class="marker_container"><div class="knob_img"></div>');
-     });
-     
-    $.each( $('.knobHolder'), function() {
 
-        val = $(this).attr('data-value');
-        switch( parseInt($(this).attr('data-knobType')) ){
-            case 0:
-                $('#'+ $(this).attr('id') +' .marker_container').css('transform', "rotate("+val*280/100+"deg)");
-                break;
-            case 1:
-                steps = parseInt( $('#'+ $(this).attr('id') ).attr("data-steps") );
-                $('#'+ $(this).attr('id') +' .marker_container').css('transform', "rotate("+parseFloat(280.0*(val/steps))+"deg)");
-                break;
-        }
-    });
     
     octave1 = parseInt($('#knob-octave1').attr('data-value'));
     volume1 = parseFloat($('#knob-volume1').attr('data-value'))/100;
+    detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
     octave2 = parseInt($('#knob-octave2').attr('data-value'));
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
+    detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
     knobEditing = false;
     
     // **********************************************************************
@@ -262,7 +246,7 @@ $(document).ready(function () {
     // KNOB EVENTS
     // ******************************************************
     
-    $('.knobHolder').mousemove( function(){
+    $('.knob').mousemove( function(){
         var id = $(this).attr('id');
         if( id == 'knob-volume1' ){
             volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;

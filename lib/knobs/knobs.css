@@ -1,4 +1,29 @@
+/* globals */
 
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold);
+
+html {
+  font:62.5%/1 "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+  background-color: hsla(0,0%,90%,1);  
+  background-image: linear-gradient(-45deg, hsla(0,0%,0%,0), hsla(0,0%,0%,.05) );
+  background-size: 5px;
+}
+
+body {
+  margin: 100px;
+}
+
+button { border: none; display: block; }
+a { text-decoration: none; display: block; }
+
+/*  DISABLE SELECT AND DRAG */
+html, body, div, span, object,
+form, input, h1, h2, button, label, a, img {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  /* this will work for QtWebKit in future */
+  -webkit-user-drag: none;
+}
 
 /* Metal ------------------------- */
 
@@ -36,6 +61,7 @@
     
     -webkit-radial-gradient( 50% 50%, 200% 50%, hsla(0,0%,90%,1) 5%, hsla(0,0%,85%,1) 30%, hsla(0,0%,60%,1) 100%);
 }
+}
 
 
 .metal.radial:before, .metal.radial:after {
@@ -56,16 +82,35 @@
 .metal.radial:before { transform: rotate( 65deg); }
 .metal.radial:after { transform: rotate(-65deg); }
 
-.knob_img{
+.plastic{
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #111;
+  -webkit-border-radius: 120px;
+      -mozborder-radius: 120px;
+          border-radius: 120px;
+  -webkit-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
+     -moz-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
+          box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
+
+background: #45484d; /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover, #45484d 0%, #000000 100%); /* FF3.6+ */
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
+background: -webkit-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+background: -o-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* Opera 12+ */
+background: -ms-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* IE10+ */
+background: radial-gradient(ellipse at center, #45484d 0%,#000000 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.knob img{
     position: absolute;
     width: 48px;
     height: 48px;
     top:0;
     left:0;
     z-index: 10;
-    background: url('../img/knob_mask.svg');
-    background-size:48px 48px;
-    background-repeat:no-repeat;
 }
 
 .marker_container{
@@ -74,28 +119,25 @@
     left: 0;
     width: 48px;
     height: 48px;
+    background: url('knob.svg');
+    background-size: 100%;
 }
 
-.marker{
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    bottom: 3px;
-    left: 3px;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: inset 0 0 1px 1px #999;
-    z-index: 30;
-}
-
-.knobHolder{
-    width: 48px;
-    height: 82px;
-    float: left;
-    margin: 10px;
+.knob {
     position: relative;
-    display: block;
     cursor: pointer;
+    width: 48px;
+    height: 78px;
+    float: left;
+    top: 0;
+    bottom: 0;
+    margin: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .knobCaption{
@@ -107,4 +149,3 @@
     position:absolute;
     bottom:0;
 }
-

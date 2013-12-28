@@ -13,7 +13,7 @@ var typeSwitched = 2;
 
 var params = new Array(); // parameters array
 
-$(".knobHolder").mousedown(function(e) {
+$(".knobHolder").mousedown(function(event) {
     clickX = event.pageX;
     clickY = event.pageY;
     var offsetY = 0;

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Freakk Synth</title>
     <link rel="stylesheet" href="css/freakk_synth.css">
-    <link rel="stylesheet" href="css/knob.css">
+    <link rel="stylesheet" href="lib/knobs/knobs.css">
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
   </head>
   <body>
@@ -13,25 +13,42 @@
         <div class="center_section">
             <div class="frame_piece frame_top" ></div> 
             <div id="knobContainer">
+                
                 <!-- OSC 1 -->
-                <div class="knobHolder" id="knob-osc1Type" data-role="osc1Type"  data-knobType="1" data-value="1" data-steps="3" ><div class="knob"></div>
-                <div class="knobCaption">WAVE 1</div></div>
                 
-                <div class="knobHolder" id="knob-volume1" data-role="volume" data-knobType="0" data-value="25"> <div class="knob" ></div><div class="knobCaption">VOL 1</div></div>
+                <div id="knob-osc1Type" class="knob" data-role="osc1Type" data-type="stepped" data-value="1" data-steps="3" >
+                    <div class="knobCaption">WAVE 1</div>
+                </div>
                 
-                <div class="knobHolder" id="knob-octave1" data-role="octave1"  data-knobType="1" data-value="2" data-steps="4" > <div class="knob" ></div><div class="knobCaption">OCT 1</div></div>
+                <div id="knob-volume1" class="knob"  data-role="volume" data-type="continuous" data-value="25">
+                    <div class="knobCaption">VOL 1</div>
+                </div>
+
+                <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="1" data-steps="4">
+                    <div class="knobCaption">OCT 1</div>
+                </div>
                 
-                <div class="knobHolder" id="knob-detune1" data-role="detune" data-knobType="0" data-value="50">  <div class="knob" ></div><div class="knobCaption">DET 1</div></div>
+                <div id="knob-detune1" class="knob" data-role="detune" data-type="continuous" data-value="50">
+                    <div class="knobCaption">DET 1</div>
+                </div>
                 
                 <!-- OSC 2 -->
-                <div class="knobHolder" id="knob-osc2Type" data-role="osc2Type"  data-knobType="1" data-value="3" data-steps="3" > <div class="knob" ></div><div class="knobCaption">WAVE 2</div></div>
                 
-                <div class="knobHolder" id="knob-volume2" data-role="volume" data-knobType="0" data-value="25">  <div class="knob" ></div><div class="knobCaption">VOL 2</div></div>
+                <div id="knob-osc2Type" class="knob" data-role="osc2Type" data-type="stepped" data-value="1" data-steps="3" >
+                    <div class="knobCaption">WAVE 2</div>
+                </div>
                 
-                <div class="knobHolder" id="knob-octave2" data-role="octave2"  data-knobType="1" data-value="4" data-steps="4" > <div class="knob" ></div><div class="knobCaption">OCT 2</div></div>
+                <div id="knob-volume2" class="knob"  data-role="volume" data-type="continuous" data-value="25">
+                    <div class="knobCaption">VOL 2</div>
+                </div>
+
+                <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="1" data-steps="4">
+                    <div class="knobCaption">OCT 2</div>
+                </div>
                 
-                <div class="knobHolder" id="knob-detune2" data-role="detune" data-knobType="0" data-value="50">  <div class="knob" 
-                ></div><div class="knobCaption">DET 2</div></div>
+                <div id="knob-detune2" class="knob" data-role="detune" data-type="continuous" data-value="50">
+                    <div class="knobCaption">DET 2</div>
+                </div>
                 
             </div> <!-- /#knobContainer -->
             <div id="keyboardContainer">
@@ -44,7 +61,7 @@
    
     
     <script src="script/AudioContextMonkeyPatch.js"></script>
-    <script src="script/knob.js"></script>
+    <script src="lib/knobs/knobs.js"></script>
     <script src="script/freakk_synth.js" type="text/javascript"></script>
     
   </body>
