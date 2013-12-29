@@ -53,7 +53,7 @@ $(document).ready(function () {
     // *********************************************  
     /* VCO */
     var vco = context.createOscillator();
-    vco.type = parseInt($('#knob-osc1Type').attr('data-value'));;
+    vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
     vco.frequency.value = this.frequency;
     vco.start(0);
     
@@ -69,7 +69,7 @@ $(document).ready(function () {
     // *********************************************  
     /* VCO 2 */
     var vco2 = context.createOscillator();
-    vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));;
+    vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
     vco2.frequency.value = this.frequency;
     vco2.start(0);
    
@@ -94,24 +94,33 @@ $(document).ready(function () {
     var playNote = function(keyNum){
         // play osc 1
         vco.noteOn(0);
-        vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 7 / 12) -1 ) ); //max detune up or down a fifth
+        vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
+        octave1 = parseFloat( $('#knob-octave1').attr('data-value') );
+        volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
+        detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
+        vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         console.log( "freq = " + vco.frequency.value );
+       
         vca.gain.value = volume1 ;
+        
         // play osc 2
         vco2.noteOn(0);
-        vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 ) * ( 1 + detune2 *  ( Math.pow(2, 7 / 12) -1 ) ); //max detune up or down a fifth
+        vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
+        octave2= parseFloat( $('#knob-octave2').attr('data-value') );
+        volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
+        detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
+        vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 ) * ( 1 + detune2 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         console.log( "freq = " + vco2.frequency.value );
         vca2.gain.value = volume2 ;
     }
     
+    /*
     console.log("sine: "+vco.SINE);
     console.log("square: "+vco.SQUARE);
     console.log("sawtooth: "+vco.SAWTOOTH);
     console.log("triangle: "+vco.TRIANGLE);
+    */
     
-    // DELAY
-    // ***************************************
-
     octave1 = parseInt($('#knob-octave1').attr('data-value'));
     volume1 = parseFloat($('#knob-volume1').attr('data-value'))/100;
     detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
