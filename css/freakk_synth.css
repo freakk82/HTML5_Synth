@@ -16,9 +16,22 @@ form, input, h1, h2, button, label, a, img {
 
 html {
     font:62.5%/1 "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-    background-color: hsla(0,0%,90%,1);  
+/*     background-color: hsla(0,0%,90%,1);  
     background-image: linear-gradient(-45deg, hsla(0,0%,0%,0), hsla(0,0%,0%,.05) );
-    background-size: 5px;
+    background-size: 5px; */
+background: rgb(134,140,147); /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover,  rgba(134,140,147,1) 0%, rgba(107,116,122,1) 36%, rgba(40,52,59,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(134,140,147,1)), color-stop(36%,rgba(107,116,122,1)), color-stop(100%,rgba(40,52,59,1))); /* Chrome,Safari4+ */
+background: -webkit-radial-gradient(center, ellipse cover,  rgba(134,140,147,1) 0%,rgba(107,116,122,1) 36%,rgba(40,52,59,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-radial-gradient(center, ellipse cover,  rgba(134,140,147,1) 0%,rgba(107,116,122,1) 36%,rgba(40,52,59,1) 100%); /* Opera 12+ */
+background: -ms-radial-gradient(center, ellipse cover,  rgba(134,140,147,1) 0%,rgba(107,116,122,1) 36%,rgba(40,52,59,1) 100%); /* IE10+ */
+background: radial-gradient(ellipse at center,  rgba(134,140,147,1) 0%,rgba(107,116,122,1) 36%,rgba(40,52,59,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#868c93', endColorstr='#28343b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+
+background-size: 100% auto;
+background-repeat: no-repeat;
+height: 100%;
 }
 
 body {
@@ -134,7 +147,7 @@ overflow: hidden;
 }
 
 .frame_left, .frame_right{
-    box-shadow: 4px 4px 4px #999;
+    box-shadow:  4px 4px  4px rgba(0,0,0,0.3);
     background: #8e120e; /* Old browsers */
     background: -moz-linear-gradient(left,  #8e120e 0%, #e20f0f 3%, #e82d10 50%, #c40d0d 97%, #820202 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,#8e120e), color-stop(3%,#e20f0f), color-stop(50%,#e82d10), color-stop(97%,#c40d0d), color-stop(100%,#820202)); /* Chrome,Safari4+ */

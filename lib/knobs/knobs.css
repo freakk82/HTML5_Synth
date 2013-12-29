@@ -1,21 +1,3 @@
-/* globals */
-
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold);
-
-html {
-  font:62.5%/1 "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-  background-color: hsla(0,0%,90%,1);  
-  background-image: linear-gradient(-45deg, hsla(0,0%,0%,0), hsla(0,0%,0%,.05) );
-  background-size: 5px;
-}
-
-body {
-  margin: 100px;
-}
-
-button { border: none; display: block; }
-a { text-decoration: none; display: block; }
-
 /*  DISABLE SELECT AND DRAG */
 html, body, div, span, object,
 form, input, h1, h2, button, label, a, img {
