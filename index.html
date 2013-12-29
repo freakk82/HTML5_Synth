@@ -13,43 +13,55 @@
         <div class="center_section">
             <div class="frame_piece frame_top" ></div> 
             <div id="knobContainer">
-                
+            
                 <!-- OSC 1 -->
-                
-                <div id="knob-osc1Type" class="knob" data-role="osc1Type" data-type="stepped" data-value="1" data-steps="3" >
-                    <div class="knobCaption">WAVE 1</div>
-                </div>
-                
-                <div id="knob-volume1" class="knob"  data-role="volume" data-type="continuous" data-value="25">
-                    <div class="knobCaption">VOL 1</div>
-                </div>
+                <div class="oscControls">
+                    <div class="moduleLabel">OSC 1</div>
+                    <div id="knob-osc1Type" class="knob" data-role="osc1Type" data-type="stepped" data-value="1" data-steps="3" >
+                        <div class="knobCaption">WAVE</div>
+                        <div class="knobRing ringWaveform"></div>
+                    </div>
+                    
+                    <div id="knob-volume1" class="knob"  data-role="volume" data-type="continuous" data-value="25">
+                        <div class="knobCaption">VOL</div>
+                         <div class="knobRing ring10"></div>
+                    </div>
 
-                <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="1" data-steps="4">
-                    <div class="knobCaption">OCT 1</div>
-                </div>
-                
-                <div id="knob-detune1" class="knob" data-role="detune" data-type="continuous" data-value="50">
-                    <div class="knobCaption">DET 1</div>
-                </div>
+                    <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="1" data-steps="3">
+                        <div class="knobCaption">OCT</div>
+                         <div class="knobRing ring4"></div>
+                    </div>
+                    
+                    <div id="knob-detune1" class="knob" data-role="detune" data-type="continuous" data-value="50">
+                        <div class="knobCaption">DET</div>
+                         <div class="knobRing ring10"></div>
+                    </div>
+                </div><!-- /OSC 1 -->
                 
                 <!-- OSC 2 -->
-                
-                <div id="knob-osc2Type" class="knob" data-role="osc2Type" data-type="stepped" data-value="1" data-steps="3" >
-                    <div class="knobCaption">WAVE 2</div>
-                </div>
-                
-                <div id="knob-volume2" class="knob"  data-role="volume" data-type="continuous" data-value="25">
-                    <div class="knobCaption">VOL 2</div>
-                </div>
+                <div class="oscControls">
+                    <div class="moduleLabel">OSC 2</div>
+                    <div id="knob-osc2Type" class="knob" data-role="osc2Type" data-type="stepped" data-value="1" data-steps="3" >
+                        <div class="knobCaption">WAVE</div>
+                        <div class="knobRing ringWaveform"></div>
+                    </div>
+                    
+                    <div id="knob-volume2" class="knob"  data-role="volume" data-type="continuous" data-value="25">
+                        <div class="knobCaption">VOL</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
 
-                <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="1" data-steps="4">
-                    <div class="knobCaption">OCT 2</div>
-                </div>
-                
-                <div id="knob-detune2" class="knob" data-role="detune" data-type="continuous" data-value="50">
-                    <div class="knobCaption">DET 2</div>
-                </div>
-                
+                    <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="1" data-steps="3">
+                        <div class="knobCaption">OCT</div>
+                        <div class="knobRing ring4"></div>
+                    </div>
+                    
+                    <div id="knob-detune2" class="knob" data-role="detune" data-type="continuous" data-value="50">
+                        <div class="knobCaption">DET</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                </div><!-- /OSC 2 -->
+                <div class="logoContainer"> <div class="logo"></div></div>
             </div> <!-- /#knobContainer -->
             <div id="keyboardContainer">
                 <div id="keyboard">

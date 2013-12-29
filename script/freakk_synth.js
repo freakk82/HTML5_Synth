@@ -33,8 +33,8 @@ $(document).ready(function () {
     if (isOpera) BrowserName="Opera";
     
     console.log("Browser: " + BrowserName);
-    if(isAndroid) alert(BrowserName+" on "+OSName);
-
+    
+    
     
     // **********************************************************************
     // SYNTH CORE
@@ -104,11 +104,14 @@ $(document).ready(function () {
         vca2.gain.value = volume2 ;
     }
     
+    console.log("sine: "+vco.SINE);
+    console.log("square: "+vco.SQUARE);
+    console.log("sawtooth: "+vco.SAWTOOTH);
+    console.log("triangle: "+vco.TRIANGLE);
+    
     // DELAY
     // ***************************************
 
-
-    
     octave1 = parseInt($('#knob-octave1').attr('data-value'));
     volume1 = parseFloat($('#knob-volume1').attr('data-value'))/100;
     detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
