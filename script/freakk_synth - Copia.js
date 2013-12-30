@@ -89,16 +89,6 @@ $(document).ready(function () {
     var octave2 = 2;
     var detune2 = 50;
     
-    var attack=0;      // attack speed
-    var release=0;   // release speed
-    var portamento=0;  // portamento/glide speed
-    var decay = 0; // TO DO
-    var sustain = 0; // TO DO
-    var activeNotes = []; // the stack of actively-pressed keys
-    
-    var MAX_OCTAVE = 2;
-    var keyOctSwitch = 0;
-    
     // DELAY
     // ******************************
     delay = context.createDelayNode(),
@@ -128,58 +118,28 @@ $(document).ready(function () {
     var noteToFrequency = function(note) { return  Math.pow(2, (note-58) / 12) * 440.0; }
     
     var playNote = function(keyNum){
-        activeNotes.push( keyNum );
         // play osc 1
         vco.noteOn(0);
         vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
         octave1 = parseFloat( $('#knob-octave1').attr('data-value') );
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
         detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
-        vco.frequency.cancelScheduledValues(0);
-        vco.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave1 + 12 * keyOctSwitch ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ), 0, portamento );
-        //vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
+        vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         //console.log( "freq = " + vco.frequency.value );
        
-        //vca.gain.value = volume1 ;
-        vca.gain.cancelScheduledValues(0);
-        vca.gain.setTargetAtTime(volume1, 0, attack);
+        vca.gain.value = volume1 ;
         
-        // play osc 1
+        // play osc 2
         vco2.noteOn(0);
         vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
-        octave2 = parseFloat( $('#knob-octave2').attr('data-value') );
+        octave2= parseFloat( $('#knob-octave2').attr('data-value') );
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
         detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
-        vco2.frequency.cancelScheduledValues(0);
-        vco2.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave2 + 12 * keyOctSwitch) * ( 1 + detune2 *  ( Math.pow(2, 1 / 12) -1 ) ), 0, portamento );
-        //vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
+        vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 ) * ( 1 + detune2 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         //console.log( "freq = " + vco2.frequency.value );
-       
-        //vca.gain.value = volume1 ;
-        vca2.gain.cancelScheduledValues(0);
-        vca2.gain.setTargetAtTime(volume2, 0, attack);
+        vca2.gain.value = volume2 ;
     }
     
-    var muteNote = function(keyNum){
-      var position = activeNotes.indexOf(keyNum);
-      console.log('position: '+ position);
-      if (position!=-1) {
-        activeNotes.splice(position,1);
-      }
-      if (activeNotes.length==0) {  // shut off the envelope
-        vca.gain.cancelScheduledValues(0);
-        vca.gain.setTargetAtTime(0.0, 0, release );
-        vca2.gain.cancelScheduledValues(0);
-        vca2.gain.setTargetAtTime(0.0, 0, release );
-        
-      } else {
-        vco.frequency.cancelScheduledValues(0);
-        vco.frequency.setTargetAtTime( noteToFrequency(activeNotes[activeNotes.length-1] + 12 * octave1 + 12 * keyOctSwitch), 0, portamento );
-        vco2.frequency.cancelScheduledValues(0);
-        vco2.frequency.setTargetAtTime( noteToFrequency(activeNotes[activeNotes.length-1] + 12 * octave2 + 12 * keyOctSwitch), 0, portamento );
-      }
-      console.log('notesLength: '+activeNotes.length);
-    }
     /*
     console.log("sine: "+vco.SINE);
     console.log("square: "+vco.SQUARE);
@@ -193,8 +153,6 @@ $(document).ready(function () {
     octave2 = parseInt($('#knob-octave2').attr('data-value'));
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
     detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
-    
-
     knobEditing = false;
     
     // **********************************************************************
@@ -205,9 +163,8 @@ $(document).ready(function () {
     var keyboardWidth = $("#keyboardContainer").width(); //retrieve current window width
     var windowHeight = $(window).height(); //retrieve current window height
     console.log("width" + keyboardWidth);
-    var NUM_KEYS = 48;
-    var isKeyDown = [];
-    var numOctaves = (NUM_KEYS/12);
+    var numKeys = 48;
+    var numOctaves = (numKeys/12);
     var numWhiteKeys = numOctaves * 7;
     var numBlackKeys = numOctaves * 5;
     var whiteKeyWidth = (keyboardWidth / numWhiteKeys);
@@ -218,9 +175,8 @@ $(document).ready(function () {
     var j = 0
     var wk = 0
     var bk = 0
-    for( var i=0; i<NUM_KEYS; i++){
+    for( var i=0; i<numKeys; i++){
         j = i%12;
-        isKeyDown[i] = false;
         if( j == 1 || j == 3 || j == 6 || j == 8 || j == 10  ){
             /* keyId = "bk" + bk; */
             keyId = "k" + i;
@@ -266,91 +222,71 @@ $(document).ready(function () {
     $(document).keydown(function(event){
         keyPressed = event.which;
         note = (keyValues[keyPressed]);
-        if(keyPressed == 40 ) { // Arrow Key down
-            /*
-            // Move the octave knob
+        if(keyPressed == 40 ) {
             octave1 = parseInt( $('#knob-octave1').attr("data-value") );
             if( octave1>0 ) $('#knob-octave1').attr('data-value' , --octave1);
             steps = parseInt( $('#knob-octave1').attr("data-steps") );
-            $('#knob-octave1  .marker_container').css('transform', "rotate("+parseFloat(280.0*(octave1/steps))+"deg)");
-            */
-            keyOctSwitch = (keyOctSwitch-1)%MAX_OCTAVE;
+            $('#knob-octave1  .marker_container').css('transform', "rotate("+parseFloat(280.0*(octave1/steps))+"deg)");            
             }
-        if(keyPressed == 38 ) { // Arrow Key Up
-            /*
-            // Move the octave knob
+        if(keyPressed == 38 ) {
             octave1 = parseInt( $('#knob-octave1').attr("data-value") );
             if( octave1<5 ) $('#knob-octave1').attr('data-value' , ++octave1);
             steps = parseInt( $('#knob-octave1').attr("data-steps") );
             $('#knob-octave1  .marker_container').css('transform', "rotate("+parseFloat(280.0*(octave1/steps))+"deg)");            
-            */
-            keyOctSwitch = (keyOctSwitch+1)%MAX_OCTAVE
         }
-        //vco.frequency.value = noteToFrequency(note); // set frequency
-        //vco2.frequency.value = noteToFrequency(note); // set frequency
-        else {
-            if(note>0 && !isKeyDown[keyValues[event.which]] ) playNote(note); // check note validity and avoid bounce
-            //alert(keyPressed);
-            $('#k'+ (keyValues[event.which] - 1)).addClass('active');
-            isKeyDown[keyValues[event.which]] = true;
-        }
+        vco.frequency.value = noteToFrequency(note); // set frequency
+        vco2.frequency.value = noteToFrequency(note); // set frequency
+        value = keyValues[keyPressed];
+        if(value>0) playNote(note);
+        //alert(keyPressed);
+        $('#k'+ (keyValues[event.which] - 1)).addClass('active');
     });
     
     $(document).keyup(function(event){ 
-        //vca.gain.value = 0;
-        //vca2.gain.value = 0;
+        vca.gain.value = 0;
+        vca2.gain.value = 0;
         $('#k'+ (keyValues[event.which] -1)).removeClass('active');
-        keyPressed = event.which;
-        note = (keyValues[keyPressed]);
-        muteNote( note );
-        isKeyDown[keyValues[event.which]] = false;
     });
     
-    // ******************************************************
-    // MOUSE EVENTS
-    // ******************************************************
     var isMouseDown = false;
-    
     $( document ).mouseup(function() {
         isMouseDown = false ;
     });
-    
     $( document ).mousedown(function() {
         isMouseDown = true ;
     });
-    
-    // MOUSE NOTE ON
-    $('.key').mousedown(function() {
-        //isMouseDown = true;
-        note = parseInt($(this).attr("data-keyNum"));
-        $(this).addClass("active"); 
-        playNote( note  );
-        });
-        
     $( ".key" ).mouseover( function() { 
         if(isMouseDown) {
             $(this).addClass("active");
             playNote( parseInt($(this).attr("data-keyNum")) );
         }
     });
-    
-    // MOUSE NOTE OFF
-    $( ".key" ).mouseup(function() {
-        //isMouseDown = false ;
-        /* $(this).removeClass("active");
+
+    $('.key').mousedown(function() {
+        //isMouseDown = true;
+        $(this).addClass("active"); 
+        playNote( parseInt($(this).attr("data-keyNum"))  );
+        })
+        .mouseup(function() {
+        //isMouseDown = false;
         vca.gain.value = 0;
-        vca2.gain.value = 0; */
-        $(this).removeClass("active");
-        muteNote( parseInt($(this).attr("data-keyNum")) );
+        vca2.gain.value = 0;
+        
     });
+    
     $( ".key" ).mouseleave(function() { 
         $(this).removeClass("active");
-        /*vca.gain.value = 0;
+        vca.gain.value = 0;
         vca2.gain.value = 0;
-        */
-       muteNote( parseInt($(this).attr("data-keyNum")) );
     });
     
+
+    $( ".key" ).mouseup(function() {
+        //isMouseDown = false ;
+        $(this).removeClass("active");
+        vca.gain.value = 0;
+        vca2.gain.value = 0;
+    });
     
     // ******************************************************
     // KNOB EVENTS
@@ -400,22 +336,6 @@ $(document).ready(function () {
             else if( id == 'knob-delayVolume' ){
                  wetLevel.gain.value = parseInt(value)/100; 
             }
-            else if( id == 'knob-attack' ){
-                 attack = parseInt(value)/100; 
-            }
-            else if( id == 'knob-decay' ){
-                 decay = parseInt(value)/100; 
-            }
-            else if( id == 'knob-sustain' ){
-                 sustain = parseInt(value)/100; 
-            }
-            else if( id == 'knob-release' ){
-                 release = parseInt(value)/100; 
-            }
-            else if( id == 'knob-portamento' ){
-                 portamento = parseInt(value)/100; 
-            }
-            
         }               
    
     

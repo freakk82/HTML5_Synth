@@ -17,7 +17,7 @@
                 <!-- OSC 1 -->
                 <div class="paramGroup">
                     <div class="moduleLabel">OSC 1</div>
-                    <div id="knob-osc1Type" class="knob" data-role="osc1Type" data-type="stepped" data-value="1" data-steps="3" >
+                    <div id="knob-osc1Type" class="knob" data-role="osc1Type" data-type="stepped" data-value="0" data-steps="3" >
                         <div class="knobCaption">WAVE</div>
                         <div class="knobRing ringWaveform"></div>
                     </div>
@@ -64,10 +64,15 @@
                 <!-- ADSR -->
                 <div class="paramGroup">
                     <div class="moduleLabel">ENV</div>
+                    <div id="knob-portamento" class="knob" data-role="portamento" data-type="continuous" data-value="0"  >
+                        <div class="knobCaption">POR</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
                     <div id="knob-attack" class="knob" data-role="attack" data-type="continuous" data-value="0"  >
                         <div class="knobCaption">ATT</div>
                         <div class="knobRing ring10"></div>
                     </div>
+                    <!--
                     <div id="knob-decay" class="knob" data-role="decay" data-type="continuous" data-value="0"  >
                         <div class="knobCaption">DEC</div>
                         <div class="knobRing ring10"></div>
@@ -76,6 +81,8 @@
                         <div class="knobCaption">SUS</div>
                         <div class="knobRing ring10"></div>
                     </div>
+                    -->
+                    
                     <div id="knob-release" class="knob" data-role="release" data-type="continuous" data-value="0"  >
                         <div class="knobCaption">REL</div>
                         <div class="knobRing ring10"></div>
