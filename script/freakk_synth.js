@@ -88,7 +88,33 @@ $(document).ready(function () {
     var volume2 = 1;
     var octave2 = 2;
     var detune2 = 50;
-   
+    
+    // DELAY
+    // ******************************
+    delay = context.createDelayNode(),
+    feedback = context.createGainNode(),
+    wetLevel = context.createGainNode();
+
+    //set fixed parameters
+    maxDelayFeedback =  1;
+    maxDelayTime = 1; //seconds
+    
+    delay.delayTime.value = 0; //150 ms delay
+    feedback.gain.value = 0;
+    wetLevel.gain.value = 0;
+
+    //set up the routing for osc 1
+    vca.connect(context.destination); //direct out
+    vca.connect(delay);
+    //set up the routing for osc 2
+    vca2.connect(context.destination); //direct out
+    vca2.connect(delay);
+    
+    delay.connect(feedback);
+    delay.connect(wetLevel);
+    feedback.connect(delay);
+    wetLevel.connect(context.destination);
+
     var noteToFrequency = function(note) { return  Math.pow(2, (note-58) / 12) * 440.0; }
     
     var playNote = function(keyNum){
@@ -99,7 +125,7 @@ $(document).ready(function () {
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
         detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
         vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
-        console.log( "freq = " + vco.frequency.value );
+        //console.log( "freq = " + vco.frequency.value );
        
         vca.gain.value = volume1 ;
         
@@ -110,7 +136,7 @@ $(document).ready(function () {
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
         detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
         vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave2 ) * ( 1 + detune2 *  ( Math.pow(2, 1 / 12) -1 ) ); 
-        console.log( "freq = " + vco2.frequency.value );
+        //console.log( "freq = " + vco2.frequency.value );
         vca2.gain.value = volume2 ;
     }
     
@@ -221,9 +247,14 @@ $(document).ready(function () {
         vca2.gain.value = 0;
         $('#k'+ (keyValues[event.which] -1)).removeClass('active');
     });
-    var isMouseDown = false;
-
     
+    var isMouseDown = false;
+    $( document ).mouseup(function() {
+        isMouseDown = false ;
+    });
+    $( document ).mousedown(function() {
+        isMouseDown = true ;
+    });
     $( ".key" ).mouseover( function() { 
         if(isMouseDown) {
             $(this).addClass("active");
@@ -232,12 +263,12 @@ $(document).ready(function () {
     });
 
     $('.key').mousedown(function() {
-        isMouseDown = true;
+        //isMouseDown = true;
         $(this).addClass("active"); 
         playNote( parseInt($(this).attr("data-keyNum"))  );
         })
         .mouseup(function() {
-        isMouseDown = false;
+        //isMouseDown = false;
         vca.gain.value = 0;
         vca2.gain.value = 0;
         
@@ -248,8 +279,10 @@ $(document).ready(function () {
         vca.gain.value = 0;
         vca2.gain.value = 0;
     });
+    
+
     $( ".key" ).mouseup(function() {
-        isMouseDown = false ;
+        //isMouseDown = false ;
         $(this).removeClass("active");
         vca.gain.value = 0;
         vca2.gain.value = 0;
@@ -259,32 +292,51 @@ $(document).ready(function () {
     // KNOB EVENTS
     // ******************************************************
     
+    $('.knob').click( function(){
+       parseKnobParam($(this).attr('id'));
+    });
     $('.knob').mousemove( function(){
-        var id = $(this).attr('id');
-        if( id == 'knob-volume1' ){
-            volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
-        }
-        else if( id == 'knob-volume2' ){
-            volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
-        }
-        else if( id == 'knob-octave1' ){
-            octave1 = parseInt( $(this).attr('data-value') );
-        }
-        else if( id == 'knob-octave2' ){
-            octave2 = parseInt( $(this).attr('data-value') );
-        }
-        else if( id == 'knob-osc1Type' ){
-            vco.type = parseInt( $(this).attr('data-value') );
-        }
-        else if( id == 'knob-osc2Type' ){
-            vco2.type = parseInt( $(this).attr('data-value') );
-        }
-        else if( id == 'knob-detune1' ){
-           detune1 = (parseInt( $(this).attr('data-value') ) - 50 ) * .02;
-        }
-        else if( id == 'knob-detune2' ){
-           detune2 = (parseInt( $(this).attr('data-value') ) - 50 ) * .02;
-        }
+        if(isMouseDown) parseKnobParam($(this).attr('id'));
     });
+
     
-    });
+    var parseKnobParam = function(id){
+            value = $('#'+id).attr('data-value');
+            if( id == 'knob-volume1' ){
+                volume1 = parseFloat(value )/100;
+            }
+            else if( id == 'knob-volume2' ){
+                volume2 = parseFloat(value )/100;
+            }
+            else if( id == 'knob-octave1' ){
+                octave1 = parseInt(value );
+            }
+            else if( id == 'knob-octave2' ){
+                octave2 = parseInt(value );
+            }
+            else if( id == 'knob-osc1Type' ){
+                vco.type = parseInt(value );
+            }
+            else if( id == 'knob-osc2Type' ){
+                vco2.type = parseInt(value );
+            }
+            else if( id == 'knob-detune1' ){
+               detune1 = (parseInt(value ) - 50 ) * .02;
+            }
+            else if( id == 'knob-detune2' ){
+               detune2 = (parseInt(value ) - 50 ) * .02;
+            }
+            else if( id == 'knob-delayTime' ){
+                delay.delayTime.value = maxDelayTime * parseInt(value)/100;
+                console.log("del time: " + delay.delayTime.value);
+            }
+            else if( id == 'knob-delayFeedback' ){
+                 feedback.gain.value = maxDelayFeedback * parseInt(value)/100; 
+            }
+            else if( id == 'knob-delayVolume' ){
+                 wetLevel.gain.value = parseInt(value)/100; 
+            }
+        }               
+   
+    
+});

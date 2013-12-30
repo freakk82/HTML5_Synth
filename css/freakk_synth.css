@@ -35,7 +35,8 @@ height: 100%;
 }
 
 body {
-  margin: 100px;
+  /* margin: 100px; */
+  margin: 10px 0;
 }
 
 button { border: none; display: block; }
@@ -48,9 +49,9 @@ a { text-decoration: none; display: block; }
     /* display: block;  */
     width: 100%;
     /* left: 2%; */
-    margin: 0;
     height: auto;
     min-height: 200px;
+    padding-bottom: 30px;
     background: #000;
     overflow: hidden;
     /* border-radius: 2px; */
@@ -162,23 +163,29 @@ overflow: hidden;
 }
 
 .center_section{
-    width: -webkit-calc(100% -80px);
-    width: -moz-calc(100% -80px);
+/*     width: -webkit-calc(100% - 84px);
+    width: -moz-calc(100% - 84px);
+    width: calc(100% - 80px); */
+    width: 92%;
+    height:100%;
+    padding-bottom: 10px;
+    float: left;
 }
 .frame_left { border-top-right-radius: 0;}
 .frame_right { border-top-left-radius: 0;}
 
-.frame_left, .center_section, .frame_right {
+.frame_left, .frame_right {
     float: left;
     height: 100%;
-    width: 40px;
+    width: 3%;
 }
 .center_section {
-    width: 84%;
+    /* width: 84%; */
 }
 .main_container {
-    width: 100%;
+    /* width: 100%; */
     overflow: hidden;
+    margin:0 auto;
 }
 
 .ring10{
@@ -208,17 +215,22 @@ overflow: hidden;
 
 .logo {
     position: absolute;
-    width: 150px;
-    height:40px;
-    bottom: 0px;
-    right: 40px;
+/*     width: 150px;
+    height:40px; */
+    height:15%;
+    min-height: 30px;
+    min-width: 140px;
+    width: 15%;
+    bottom:0;
+    right: 1%;
     background: url('../img/logo.svg');
-    background-size: 100% auto;
+    background-size: 100% 100%;
+    background-position: left bottom;
     background-repeat: no-repeat;
     opacity: 0.7;
 }
 
-.oscControls{
+.paramGroup{
     margin: 5px 10px;
     /* padding: 5px; */
     border: 2px solid #EDEDED;
