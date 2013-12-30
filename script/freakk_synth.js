@@ -193,7 +193,12 @@ $(document).ready(function () {
     octave2 = parseInt($('#knob-octave2').attr('data-value'));
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
     detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
-    
+    portamento = parseFloat($('#knob-portamento').attr('data-value'))/200;
+    attack = parseFloat($('#knob-attack').attr('data-value'))/100;
+    release = parseFloat($('#knob-release').attr('data-value'))/100;
+    delay.delayTime.value = parseFloat($('#knob-delayTime').attr('data-value'))/100;
+    feedback.gain.value = parseFloat($('#knob-delayFeedback').attr('data-value'))/100;
+    wetLevel.gain.value = parseFloat($('#knob-delayVolume').attr('data-value'))/100;
 
     knobEditing = false;
     
@@ -413,7 +418,7 @@ $(document).ready(function () {
                  release = parseInt(value)/100; 
             }
             else if( id == 'knob-portamento' ){
-                 portamento = parseInt(value)/100; 
+                 portamento = parseInt(value)/200; 
             }
             
         }               
