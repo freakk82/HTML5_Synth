@@ -289,7 +289,7 @@ $(document).ready(function () {
             steps = parseInt( $('#knob-octave1').attr("data-steps") );
             $('#knob-octave1  .marker_container').css('transform', "rotate("+parseFloat(280.0*(octave1/steps))+"deg)");            
             */
-            keyOctSwitch = (keyOctSwitch+1)%MAX_OCTAVE
+            keyOctSwitch = (keyOctSwitch+1)%MAX_OCTAVE;
         }
         //vco.frequency.value = noteToFrequency(note); // set frequency
         //vco2.frequency.value = noteToFrequency(note); // set frequency
@@ -418,7 +418,7 @@ $(document).ready(function () {
                  release = parseInt(value)/100; 
             }
             else if( id == 'knob-portamento' ){
-                 portamento = parseInt(value)/200; 
+                 portamento = parseInt(value)/400; 
             }
             
         }               
