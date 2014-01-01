@@ -1,3 +1,7 @@
+/* ****************************************** */
+/*                  KNOBS                     */
+/* ****************************************** */
+
 /*  DISABLE SELECT AND DRAG */
 html, body, div, span, object,
 form, input, h1, h2, button, label, a, img {
@@ -64,27 +68,6 @@ form, input, h1, h2, button, label, a, img {
 .metal.radial:before { transform: rotate( 65deg); }
 .metal.radial:after { transform: rotate(-65deg); }
 
-.plastic{
-  position: relative;
-  width: 48px;
-  height: 48px;
-  border: 4px solid #111;
-  -webkit-border-radius: 120px;
-      -mozborder-radius: 120px;
-          border-radius: 120px;
-  -webkit-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
-     -moz-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
-          box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
-
-background: #45484d; /* Old browsers */
-background: -moz-radial-gradient(center, ellipse cover, #45484d 0%, #000000 100%); /* FF3.6+ */
-background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
-background: -webkit-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
-background: -o-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* Opera 12+ */
-background: -ms-radial-gradient(center, ellipse cover, #45484d 0%,#000000 100%); /* IE10+ */
-background: radial-gradient(ellipse at center, #45484d 0%,#000000 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', endColorstr='#000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-}
 
 .knob img{
     position: absolute;
@@ -131,4 +114,89 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#45484d', end
     position: absolute;
     bottom: 0;
     padding-top: 4px;
+}
+
+/* ****************************************** */
+/*                  SWITCHES                  */
+/* ****************************************** */
+
+.switchContainer {
+    position: relative;
+    cursor: pointer;
+    width: 44px;
+    height: 68px;
+    margin: 4px;
+    float: left;
+    top: 0;
+    bottom: 0;
+    margin: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.switch{
+    position: absolute;
+    top: 0;
+    left: 9px;
+    width: 26px;
+    height: 26px;
+    background: black;
+}
+
+.switch.pressed {
+    -webkit-box-shadow: 0 -1px 2px rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+    -moz-box-shadow: 0 -1px 2px rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+      box-shadow: 0 -1px 2px rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+}
+
+
+/*  MATERIALS */
+
+.plastic{
+    border: 1px solid #161616;
+    -webkit-border-radius: 3px;
+    -mozborder-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+    -moz-box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+    box-shadow: 0 -1px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.3);
+}
+
+/* MATERIALS END*/
+.led{
+    position:absolute;
+    left: -webkit-calc( 50% - 2px);
+    top: 4px;
+    margin: auto;
+    width: 6px;
+    height: 6px;
+    -webkit-border-radius: 4px;
+    -mozborder-radius: 4px;
+    border-radius: 4px;
+    background: #ff7568; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover,  #ff7568 0%, #cf0404 47%, #d30404 94%, #930202 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#ff7568), color-stop(47%,#cf0404), color-stop(94%,#d30404), color-stop(100%,#930202)); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7568', endColorstr='#930202',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    opacity: 0.4;
+}
+
+.led.active{
+background: #ff7568; /* Old browsers */
+background: -moz-radial-gradient(center, ellipse cover,  #ff7568 0%, #cf0404 47%, #d30404 94%, #930202 100%); /* FF3.6+ */
+background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#ff7568), color-stop(47%,#cf0404), color-stop(94%,#d30404), color-stop(100%,#930202)); /* Chrome,Safari4+ */
+background: -webkit-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* Chrome10+,Safari5.1+ */
+background: -o-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* Opera 12+ */
+background: -ms-radial-gradient(center, ellipse cover,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* IE10+ */
+background: radial-gradient(ellipse at center,  #ff7568 0%,#cf0404 47%,#d30404 94%,#930202 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7568', endColorstr='#930202',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+box-shadow: 0 0 8px #EB0505;
+opacity: 1;
 }

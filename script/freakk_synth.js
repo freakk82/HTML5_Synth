@@ -115,7 +115,7 @@ $(document).ready(function () {
     // TREMOLO
     // ******************************
     var tremolo = new tuna.Tremolo({
-                  intensity: parseInt($('#knob-tremoloIntensity').attr('data-value'))/100,    //0 to 1
+                  intensity: parseFloat($('#knob-tremoloIntensity').attr('data-value'))/100,    //0 to 1
                   rate: TREM_RATE_MULTIPLIER*parseInt($('#knob-tremoloRate').attr('data-value'))/100,         //0.001 to 8
                   stereoPhase: 0,    //0 to 180
                   bypass: 0
