@@ -35,6 +35,13 @@ $(document).ready(function () {
     console.log("Browser: " + BrowserName);
     
     
+    // **********************************************************************
+    // GLOBALS
+    // **********************************************************************
+    var MAX_OCTAVE = 2;
+    var TREM_RATE_MULTIPLIER = 12;
+    var ATT_OFFSET = 0.001;
+    var REL_OFFSET = 0.01;
     
     // **********************************************************************
     // SYNTH CORE
@@ -48,7 +55,7 @@ $(document).ready(function () {
       catch(e) {
         alert('Web Audio API is not supported in this browser');
       }
-
+   
     // OSCILLATOR 1
     // *********************************************  
     /* VCO */
@@ -56,14 +63,15 @@ $(document).ready(function () {
     vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
     vco.frequency.value = this.frequency;
     vco.start(0);
-    
+
     /* VCA */
     var vca = context.createGain();
     vca.gain.value = 0;
     
     /* Connections */
-    vco.connect(vca);
-    vca.connect(context.destination);
+    //pan1.connect(vca);
+    
+    //vca.connect(context.destination); // direct osc1 out
     
     // OSCILLATOR 2
     // *********************************************  
@@ -72,32 +80,46 @@ $(document).ready(function () {
     vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
     vco2.frequency.value = this.frequency;
     vco2.start(0);
-   
+
     /* VCA 2*/
     var vca2 = context.createGain();
     vca2.gain.value = 0;
     
     /* Connections */
-    vco2.connect(vca2);
-    vca2.connect(context.destination);
+    //pan2.connect(vca2);
+    //vca2.connect(context.destination); // direct osc2 out
     
     var volume1 = 1;
     var octave1 = 2;
     var detune1 = 50;
+
     
     var volume2 = 1;
     var octave2 = 2;
     var detune2 = 50;
+
     
-    var attack=0;      // attack speed
-    var release=0;   // release speed
+    var attack=0.01;      // attack speed
+    var release=0.01;   // release speed
     var portamento=0;  // portamento/glide speed
     var decay = 0; // TO DO
     var sustain = 0; // TO DO
     var activeNotes = []; // the stack of actively-pressed keys
-    
-    var MAX_OCTAVE = 2;
+
     var keyOctSwitch = 0;
+    
+    // TUNA
+    // ******************************
+    var tuna = new Tuna(context);
+    
+    // TREMOLO
+    // ******************************
+    var tremolo = new tuna.Tremolo({
+                  intensity: parseInt($('#knob-tremoloIntensity').attr('data-value'))/100,    //0 to 1
+                  rate: TREM_RATE_MULTIPLIER*parseInt($('#knob-tremoloRate').attr('data-value'))/100,         //0.001 to 8
+                  stereoPhase: 0,    //0 to 180
+                  bypass: 0
+              });
     
     // DELAY
     // ******************************
@@ -112,19 +134,32 @@ $(document).ready(function () {
     delay.delayTime.value = 0; //150 ms delay
     feedback.gain.value = 0;
     wetLevel.gain.value = 0;
-
-    //set up the routing for osc 1
-    vca.connect(context.destination); //direct out
-    vca.connect(delay);
-    //set up the routing for osc 2
-    vca2.connect(context.destination); //direct out
-    vca2.connect(delay);
     
     delay.connect(feedback);
     delay.connect(wetLevel);
     feedback.connect(delay);
     wetLevel.connect(context.destination);
 
+    
+    // **********************************************************************
+    // SIGNAL ROUTING
+    // **********************************************************************
+    
+    var panner = context.createPanner();
+    // default to straight ahead
+    panner.setPosition(0.0, 1.0, 0.0);
+    panner.connect( context.destination );
+
+    vco.connect(vca);
+    vca.connect(panner);
+    vco2.connect(vca2);
+    vca2.connect(panner);
+    
+    panner.connect(tremolo.input);
+    tremolo.connect(context.destination); // delay direct out
+    tremolo.connect(delay);
+    
+    
     var noteToFrequency = function(note) { return  Math.pow(2, (note-58) / 12) * 440.0; }
     
     var playNote = function(keyNum){
@@ -143,7 +178,6 @@ $(document).ready(function () {
         //vca.gain.value = volume1 ;
         vca.gain.cancelScheduledValues(0);
         vca.gain.setTargetAtTime(volume1, 0, attack);
-        
         // play osc 1
         vco2.noteOn(0);
         vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
@@ -162,7 +196,6 @@ $(document).ready(function () {
     
     var muteNote = function(keyNum){
       var position = activeNotes.indexOf(keyNum);
-      console.log('position: '+ position);
       if (position!=-1) {
         activeNotes.splice(position,1);
       }
@@ -178,7 +211,6 @@ $(document).ready(function () {
         vco2.frequency.cancelScheduledValues(0);
         vco2.frequency.setTargetAtTime( noteToFrequency(activeNotes[activeNotes.length-1] + 12 * octave2 + 12 * keyOctSwitch), 0, portamento );
       }
-      console.log('notesLength: '+activeNotes.length);
     }
     /*
     console.log("sine: "+vco.SINE);
@@ -194,8 +226,8 @@ $(document).ready(function () {
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
     detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
     portamento = parseFloat($('#knob-portamento').attr('data-value'))/200;
-    attack = parseFloat($('#knob-attack').attr('data-value'))/100;
-    release = parseFloat($('#knob-release').attr('data-value'))/100;
+    attack = ATT_OFFSET + parseFloat($('#knob-attack').attr('data-value'))/100;
+    release = REL_OFFSET + ($('#knob-release').attr('data-value'))/100;
     delay.delayTime.value = parseFloat($('#knob-delayTime').attr('data-value'))/100;
     feedback.gain.value = parseFloat($('#knob-delayFeedback').attr('data-value'))/100;
     wetLevel.gain.value = parseFloat($('#knob-delayVolume').attr('data-value'))/100;
@@ -209,7 +241,6 @@ $(document).ready(function () {
     // Variables
     var keyboardWidth = $("#keyboardContainer").width(); //retrieve current window width
     var windowHeight = $(window).height(); //retrieve current window height
-    console.log("width" + keyboardWidth);
     var NUM_KEYS = 48;
     var isKeyDown = [];
     var numOctaves = (NUM_KEYS/12);
@@ -397,7 +428,6 @@ $(document).ready(function () {
             }
             else if( id == 'knob-delayTime' ){
                 delay.delayTime.value = maxDelayTime * parseInt(value)/100;
-                console.log("del time: " + delay.delayTime.value);
             }
             else if( id == 'knob-delayFeedback' ){
                  feedback.gain.value = maxDelayFeedback * parseInt(value)/100; 
@@ -406,7 +436,7 @@ $(document).ready(function () {
                  wetLevel.gain.value = parseInt(value)/100; 
             }
             else if( id == 'knob-attack' ){
-                 attack = parseInt(value)/100; 
+                 attack = ATT_OFFSET + parseInt(value)/100; 
             }
             else if( id == 'knob-decay' ){
                  decay = parseInt(value)/100; 
@@ -415,11 +445,19 @@ $(document).ready(function () {
                  sustain = parseInt(value)/100; 
             }
             else if( id == 'knob-release' ){
-                 release = parseInt(value)/100; 
+                 release = REL_OFFSET + parseInt(value)/100; 
             }
             else if( id == 'knob-portamento' ){
                  portamento = parseInt(value)/400; 
             }
+            else if( id == 'knob-tremoloRate' ){
+                  tremolo.rate = TREM_RATE_MULTIPLIER*parseInt(value)/100; 
+            }
+            else if( id == 'knob-tremoloIntensity' ){
+                 tremolo.intensity = parseInt(value)/100; 
+            }
+
+
             
         }               
    

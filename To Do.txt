@@ -1,0 +1,5 @@
+# detune -> pitch -5th7+5th
+# tremolo before delay
+# distortion from tuna.js
+# fix keyboard octave switch
+# make keyboard layout help

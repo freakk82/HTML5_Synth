@@ -21,12 +21,14 @@
                         <div class="knobCaption">WAVE</div>
                         <div class="knobRing ringWaveform"></div>
                     </div>
-                    
                     <div id="knob-volume1" class="knob"  data-role="volume" data-type="continuous" data-value="25">
                         <div class="knobCaption">VOL</div>
                          <div class="knobRing ring10"></div>
                     </div>
-
+                    <div id="knob-pan1" class="knob" data-role="pan" data-type="continuous" data-value="40"  >
+                        <div class="knobCaption">PAN</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
                     <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="2" data-steps="3">
                         <div class="knobCaption">OCT</div>
                          <div class="knobRing ring4"></div>
@@ -50,7 +52,10 @@
                         <div class="knobCaption">VOL</div>
                         <div class="knobRing ring10"></div>
                     </div>
-
+                    <div id="knob-pan2" class="knob" data-role="pan" data-type="continuous" data-value="60"  >
+                        <div class="knobCaption">PAN</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
                     <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="3" data-steps="3">
                         <div class="knobCaption">OCT</div>
                         <div class="knobRing ring4"></div>
@@ -61,7 +66,7 @@
                         <div class="knobRing ring10"></div>
                     </div>
                 </div><!-- /OSC 2 -->
-                <!-- ADSR -->
+                <!-- PAN -->
                 <div class="paramGroup">
                     <div class="moduleLabel">ENV</div>
                     <div id="knob-portamento" class="knob" data-role="portamento" data-type="continuous" data-value="2.7"  >
@@ -88,6 +93,18 @@
                         <div class="knobRing ring10"></div>
                     </div>
                 </div><!-- /ADSR -->
+                <!-- Tremolo -->
+                <div class="paramGroup">
+                    <div class="moduleLabel">TREM</div>
+                    <div id="knob-tremoloRate" class="knob" data-role="chorusRate" data-type="continuous" data-value="26"  >
+                        <div class="knobCaption">RATE</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                    <div id="knob-tremoloIntensity" class="knob" data-role="chorusFeedback" data-type="continuous" data-value="21"  >
+                        <div class="knobCaption">DEPTH</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                </div><!-- /Tremolo -->
                 <!-- Delay -->
                 <div class="paramGroup">
                     <div class="moduleLabel">DELAY</div>
@@ -103,7 +120,7 @@
                         <div class="knobCaption">VOL</div>
                         <div class="knobRing ring10"></div>
                     </div>
-                </div><!-- /ADSR -->
+                </div><!-- /Delay -->
                 <!-- <div class="logoContainer">  -->
                     <div class="logo"></div>
                     <!-- </div> -->
@@ -119,6 +136,7 @@
     
     <script src="script/AudioContextMonkeyPatch.js"></script>
     <script src="lib/knobs/knobs.js"></script>
+    <script src="lib/tuna-master/tuna.js"></script>
     <script src="script/freakk_synth.js" type="text/javascript"></script>
     
   </body>
