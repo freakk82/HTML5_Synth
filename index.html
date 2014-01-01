@@ -85,16 +85,41 @@
                         <div class="knobRing ring10"></div>
                     </div>
                 </div><!-- /ADSR -->
-                <!-- Tremolo -->
+                <!-- Wah Wah -->
                 <div class="paramGroup">
-                    <div class="moduleLabel">TREM</div>
-                    <div id="sw01" class="switchContainer" data-value="-1">
+                    <div class="moduleLabel">FILTER</div>
+                    <div id="knob-filterType" class="knob"  data-role="filterType"  data-type="stepped" data-value="0" data-steps="2">
+                        <div class="knobCaption">TYPE</div>
+                        <div class="knobRing ring4"></div>
+                    </div>
+                    <div id="knob-filterGain" class="knob" data-role="filterGain" data-type="continuous" data-value="50"  >
+                        <div class="knobCaption">GAIN</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                    
+                    <div id="sw-filter" class="switchContainer" data-value="0">
                         <div class="switch plastic"></div>
                         <div class="led"></div>
                     </div>
+                    <div id="knob-filterFreq" class="knob" data-role="filterFreq" data-type="continuous" data-value="25"  >
+                        <div class="knobCaption">FREQ</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                    <div id="knob-filterQ" class="knob" data-role="filterQ" data-type="continuous" data-value="50"  >
+                        <div class="knobCaption">Q</div>
+                    <div class="knobRing ring10"></div>
+                    </div>
+                </div><!-- /Phaser -->
+                <!-- Tremolo -->
+                <div class="paramGroup">
+                    <div class="moduleLabel">TREMOLO</div>
                     <div id="knob-tremoloRate" class="knob" data-role="tremoloRate" data-type="continuous" data-value="26"  >
                         <div class="knobCaption">RATE</div>
                         <div class="knobRing ring10"></div>
+                    </div>
+                    <div id="sw-tremolo" class="switchContainer" data-value="0">
+                        <div class="switch plastic"></div>
+                        <div class="led"></div>
                     </div>
                     <div id="knob-tremoloIntensity" class="knob" data-role="tremoloIntensity" data-type="continuous" data-value="0.0"  >
                         <div class="knobCaption">DEPTH</div>

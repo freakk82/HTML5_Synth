@@ -40,9 +40,10 @@ $(document).ready(function () {
     // **********************************************************************
     var MAX_OCTAVE = 2;
     var TREM_RATE_MULTIPLIER = 12;
+    var PHASER_RATE_MULTIPLIER = 10;
     var ATT_OFFSET = 0.001;
     var REL_OFFSET = 0.01;
-    
+    var PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
     // **********************************************************************
     // SYNTH CORE
     // **********************************************************************
@@ -68,11 +69,6 @@ $(document).ready(function () {
     var vca = context.createGain();
     vca.gain.value = 0;
     
-    /* Connections */
-    //pan1.connect(vca);
-    
-    //vca.connect(context.destination); // direct osc1 out
-    
     // OSCILLATOR 2
     // *********************************************  
     /* VCO 2 */
@@ -85,10 +81,7 @@ $(document).ready(function () {
     var vca2 = context.createGain();
     vca2.gain.value = 0;
     
-    /* Connections */
-    //pan2.connect(vca2);
-    //vca2.connect(context.destination); // direct osc2 out
-    
+
     var volume1 = 1;
     var octave1 = 2;
     var detune1 = 50;
@@ -112,13 +105,23 @@ $(document).ready(function () {
     // ******************************
     var tuna = new Tuna(context);
     
+    // Filter
+    // ******************************
+    var filter = new tuna.Filter({
+                 frequency: 20,         //20 to 22050
+                 Q: 1,                  //0.001 to 100
+                 gain: 0,               //-40 to 40
+                 bypass: 1,             //0 to 1+
+                 filterType: 2,         //0 to 7, corresponds to the filter types in the native filter node: lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass in that order
+             });
+                 
     // TREMOLO
     // ******************************
     var tremolo = new tuna.Tremolo({
                   intensity: parseFloat($('#knob-tremoloIntensity').attr('data-value'))/100,    //0 to 1
-                  rate: TREM_RATE_MULTIPLIER*parseInt($('#knob-tremoloRate').attr('data-value'))/100,         //0.001 to 8
+                  rate: TREM_RATE_MULTIPLIER*parseFloat($('#knob-tremoloRate').attr('data-value'))/100,         //0.001 to 8
                   stereoPhase: 0,    //0 to 180
-                  bypass: 0
+                  bypass: 1
               });
     
     // DELAY
@@ -148,14 +151,14 @@ $(document).ready(function () {
     var panner = context.createPanner();
     // default to straight ahead
     panner.setPosition(0.0, 1.0, 0.0);
-    panner.connect( context.destination );
 
     vco.connect(vca);
     vca.connect(panner);
     vco2.connect(vca2);
     vca2.connect(panner);
     
-    panner.connect(tremolo.input);
+    panner.connect(filter.input);
+    filter.connect(tremolo.input);
     tremolo.connect(context.destination); // delay direct out
     tremolo.connect(delay);
     
@@ -218,20 +221,26 @@ $(document).ready(function () {
     console.log("sawtooth: "+vco.SAWTOOTH);
     console.log("triangle: "+vco.TRIANGLE);
     */
-    
+ 
+    // **********************************************************************
+    // LOAD DEFAULTS FROM HTML
+    // **********************************************************************
+     
     octave1 = parseInt($('#knob-octave1').attr('data-value'));
     volume1 = parseFloat($('#knob-volume1').attr('data-value'))/100;
     detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
     octave2 = parseInt($('#knob-octave2').attr('data-value'));
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
     detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
-    portamento = parseFloat($('#knob-portamento').attr('data-value'))/200;
+    portamento = parseFloat($('#knob-portamento').attr('data-value'))/PORTAMENTO_FACTOR;
     attack = ATT_OFFSET + parseFloat($('#knob-attack').attr('data-value'))/100;
     release = REL_OFFSET + ($('#knob-release').attr('data-value'))/100;
+    
+    // Delay defaults
     delay.delayTime.value = parseFloat($('#knob-delayTime').attr('data-value'))/100;
     feedback.gain.value = parseFloat($('#knob-delayFeedback').attr('data-value'))/100;
     wetLevel.gain.value = parseFloat($('#knob-delayVolume').attr('data-value'))/100;
-
+    
     knobEditing = false;
     
     // **********************************************************************
@@ -402,6 +411,7 @@ $(document).ready(function () {
     
     var parseKnobParam = function(id){
             value = $('#'+id).attr('data-value');
+            
             if( id == 'knob-volume1' ){
                 volume1 = parseFloat(value )/100;
             }
@@ -421,45 +431,78 @@ $(document).ready(function () {
                 vco2.type = parseInt(value );
             }
             else if( id == 'knob-detune1' ){
-               detune1 = (parseInt(value ) - 50 ) * .02;
+               detune1 = (parseFloat(value ) - 50 ) * .02;
             }
             else if( id == 'knob-detune2' ){
-               detune2 = (parseInt(value ) - 50 ) * .02;
+               detune2 = (parseFloat(value ) - 50 ) * .02;
             }
             else if( id == 'knob-delayTime' ){
-                delay.delayTime.value = maxDelayTime * parseInt(value)/100;
+                delay.delayTime.value = maxDelayTime * parseFloat(value)/100;
             }
             else if( id == 'knob-delayFeedback' ){
-                 feedback.gain.value = maxDelayFeedback * parseInt(value)/100; 
+                 feedback.gain.value = maxDelayFeedback * parseFloat(value)/100; 
             }
             else if( id == 'knob-delayVolume' ){
-                 wetLevel.gain.value = parseInt(value)/100; 
+                 wetLevel.gain.value = parseFloat(value)/100; 
             }
             else if( id == 'knob-attack' ){
-                 attack = ATT_OFFSET + parseInt(value)/100; 
+                 attack = ATT_OFFSET + parseFloat(value)/100; 
             }
             else if( id == 'knob-decay' ){
-                 decay = parseInt(value)/100; 
+                 decay = parseFloat(value)/100; 
             }
             else if( id == 'knob-sustain' ){
-                 sustain = parseInt(value)/100; 
+                 sustain = parseFloat(value)/100; 
             }
             else if( id == 'knob-release' ){
-                 release = REL_OFFSET + parseInt(value)/100; 
+                 release = REL_OFFSET + parseFloat(value)/100; 
             }
             else if( id == 'knob-portamento' ){
-                 portamento = parseInt(value)/400; 
+                 portamento = parseFloat(value)/PORTAMENTO_FACTOR; 
             }
             else if( id == 'knob-tremoloRate' ){
-                  tremolo.rate = TREM_RATE_MULTIPLIER*parseInt(value)/100; 
+                  tremolo.rate = TREM_RATE_MULTIPLIER*parseFloat(value)/100; 
             }
             else if( id == 'knob-tremoloIntensity' ){
-                 tremolo.intensity = parseInt(value)/100; 
+                 tremolo.intensity = parseFloat(value)/100; 
             }
-
-
+            else if( id == 'knob-filterFreq' ){
+                 val= 20 + 4000 * parseFloat(value)/100;
+                 filter.frequency  = val;
+                 console.log(val);
+            }
+            else if( id == 'knob-filterQ' ){
+                 val = 1 + 49 * parseFloat(value)/100;
+                 filter.Q = val;
+                 console.log(val);
+            }
+            else if( id == 'knob-filterType' ){
+                 filter.filterType = parseFloat(value);
+            }
+            else if( id == 'knob-filterGain' ){
+                 filter.gain = -20 + 20 * parseFloat(value)/100;
+            }
             
         }               
    
+    // ******************************************************
+    // SWITCH EVENTS
+    // ******************************************************
+    $('.switchContainer').mouseup( function(){
+        id = $(this).attr('id');
+        if(id=='sw-tremolo'){
+            var val = parseFloat($(this).attr('data-value'));
+            $(this).attr('data-value', val);
+            if(val == 0) tremolo.bypass = 1;
+            else tremolo.bypass = 0;
+        }
+        else if(id=='sw-filter'){
+            var val = parseFloat($(this).attr('data-value'));
+            $(this).attr('data-value', val);
+            if(val == 0) filter.bypass = 1;
+            else filter.bypass = 0;
+        }
+        
+    });
     
 });

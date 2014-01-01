@@ -69,6 +69,7 @@ a { text-decoration: none; display: block; }
     background: -ms-linear-gradient(top, rgba(120,120,120,1) 0%, rgba(74,74,74,1) 49%, rgba(0,0,0,1) 100%);
     background: linear-gradient(to bottom, rgba(120,120,120,1) 0%, rgba(74,74,74,1) 49%, rgba(0,0,0,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#787878', endColorstr='#000000', GradientType=0 );
+
 }
 
 #keyboardContainer{
