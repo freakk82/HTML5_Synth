@@ -41,6 +41,7 @@ $(document).ready(function () {
     var MAX_OCTAVE = 2;
     var TREM_RATE_MULTIPLIER = 12;
     var PHASER_RATE_MULTIPLIER = 10;
+    var OD_LEVEL_FACTOR = 1000;
     var ATT_OFFSET = 0.001;
     var REL_OFFSET = 0.01;
     var PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
@@ -123,7 +124,18 @@ $(document).ready(function () {
                   stereoPhase: 0,    //0 to 180
                   bypass: 1
               });
-    
+
+    // OVERDRIVE
+    // ******************************              
+    var overdrive = new tuna.Overdrive({
+                    outputGain: 0.2,         //0 to 1+
+                    drive: 0.7,              //0 to 1
+                    curveAmount: parseFloat($('#knob-amount').attr('data-value'))/100,          //0 to 1
+                    algorithmIndex: 2,       //0 to 5, selects one of our drive algorithms
+                    bypass: 1
+                });
+    var odLevel = context.createGain();
+    odLevel.gain.value = parseFloat($('#knob-odLevel').attr('data-value'))/OD_LEVEL_FACTOR;
     // DELAY
     // ******************************
     delay = context.createDelayNode(),
@@ -157,7 +169,9 @@ $(document).ready(function () {
     vco2.connect(vca2);
     vca2.connect(panner);
     
-    panner.connect(filter.input);
+    panner.connect(overdrive.input);
+    overdrive.connect(odLevel);
+    odLevel.connect(filter.input);
     filter.connect(tremolo.input);
     tremolo.connect(context.destination); // delay direct out
     tremolo.connect(delay);
@@ -482,6 +496,13 @@ $(document).ready(function () {
             else if( id == 'knob-filterGain' ){
                  filter.gain = -20 + 20 * parseFloat(value)/100;
             }
+            else if( id == 'knob-amount' ){
+                 overdrive.curveAmount = parseFloat(value)/100;
+                 console.log('Curveamount: '+ parseFloat(value)/100);
+            }
+            else if( id == 'knob-odLevel' ){
+                 odLevel.gain.value = parseFloat(value)/OD_LEVEL_FACTOR;
+            }
             
         }               
    
@@ -490,17 +511,20 @@ $(document).ready(function () {
     // ******************************************************
     $('.switchContainer').mouseup( function(){
         id = $(this).attr('id');
+        val = parseFloat($(this).attr('data-value'));
         if(id=='sw-tremolo'){
-            var val = parseFloat($(this).attr('data-value'));
             $(this).attr('data-value', val);
             if(val == 0) tremolo.bypass = 1;
             else tremolo.bypass = 0;
         }
         else if(id=='sw-filter'){
-            var val = parseFloat($(this).attr('data-value'));
-            $(this).attr('data-value', val);
             if(val == 0) filter.bypass = 1;
             else filter.bypass = 0;
+        }
+        else if(id=='sw-overdrive'){
+            $(this).attr('data-value', val);
+            if(val == 0) overdrive.bypass = 1;
+            else overdrive.bypass = 0;
         }
         
     });
