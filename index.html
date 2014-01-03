@@ -25,7 +25,7 @@
                         <div class="knobCaption">VOL</div>
                          <div class="knobRing ring10"></div>
                     </div>
-                    <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="2" data-steps="3">
+                    <div id="knob-octave1" class="knob"  data-role="octave1"  data-type="stepped" data-value="0" data-steps="3">
                         <div class="knobCaption">OCT</div>
                          <div class="knobRing ring4"></div>
                     </div>
@@ -48,7 +48,7 @@
                         <div class="knobCaption">VOL</div>
                         <div class="knobRing ring10"></div>
                     </div>
-                    <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="3" data-steps="3">
+                    <div id="knob-octave2" class="knob"  data-role="octave2"  data-type="stepped" data-value="1" data-steps="3">
                         <div class="knobCaption">OCT</div>
                         <div class="knobRing ring4"></div>
                     </div>
@@ -85,7 +85,23 @@
                         <div class="knobRing ring10"></div>
                     </div>
                 </div><!-- /ADSR -->
-                <!-- Wah Wah -->
+                <!-- Overdrive -->
+                <div class="paramGroup">
+                    <div class="moduleLabel">OVERDRIVE</div>
+                    <div id="knob-drive" class="knob" data-role="drive" data-type="continuous" data-value="40"  >
+                        <div class="knobCaption">DRIVE</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                    <div id="sw-overdrive" class="switchContainer" data-value="0">
+                        <div class="switch plastic"></div>
+                        <div class="led"></div>
+                    </div>
+                    <div id="knob-odLevel" class="knob" data-role="odLevel" data-type="continuous" data-value="50"  >
+                        <div class="knobCaption">VOL</div>
+                        <div class="knobRing ring10"></div>
+                    </div>
+                </div><!-- /Overdrive -->
+                <!-- Filter -->
                 <div class="paramGroup">
                     <div class="moduleLabel">FILTER</div>
                     <div id="knob-filterType" class="knob"  data-role="filterType"  data-type="stepped" data-value="0" data-steps="2">
@@ -109,23 +125,8 @@
                         <div class="knobCaption">Q</div>
                     <div class="knobRing ring10"></div>
                     </div>
-                </div><!-- /Phaser -->
-                <!-- Overdrive -->
-                <div class="paramGroup">
-                    <div class="moduleLabel">OVERDRIVE</div>
-                    <div id="knob-amount" class="knob" data-role="amount" data-type="continuous" data-value="10"  >
-                        <div class="knobCaption">DRIVE</div>
-                        <div class="knobRing ring10"></div>
-                    </div>
-                    <div id="sw-overdrive" class="switchContainer" data-value="0">
-                        <div class="switch plastic"></div>
-                        <div class="led"></div>
-                    </div>
-                    <div id="knob-odLevel" class="knob" data-role="odLevel" data-type="continuous" data-value="10"  >
-                        <div class="knobCaption">VOL</div>
-                        <div class="knobRing ring10"></div>
-                    </div>
-                </div><!-- /Overdrive -->
+                </div><!-- /Filter -->
+                
                 <!-- Tremolo -->
                 <div class="paramGroup">
                     <div class="moduleLabel">TREMOLO</div>

@@ -41,7 +41,7 @@ $(document).ready(function () {
     var MAX_OCTAVE = 2;
     var TREM_RATE_MULTIPLIER = 12;
     var PHASER_RATE_MULTIPLIER = 10;
-    var OD_LEVEL_FACTOR = 1000;
+    var OD_LEVEL_FACTOR = 100;
     var ATT_OFFSET = 0.001;
     var REL_OFFSET = 0.01;
     var PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
@@ -109,13 +109,16 @@ $(document).ready(function () {
     // Filter
     // ******************************
     var filter = new tuna.Filter({
-                 frequency: 20,         //20 to 22050
-                 Q: 1,                  //0.001 to 100
-                 gain: 0,               //-40 to 40
+                 frequency: 1 + 20 * parseFloat($('#knob-filterFreq').attr('data-value')),       //20 to 2000
+                 Q: 1 + 49 * parseFloat($('#knob-filterQ').attr('data-value'))/100,                  //0.001 to 100
+                 gain: -20 + 20 *  parseFloat($('#knob-filterGain').attr('data-value'))/100,               //-40 to 40
                  bypass: 1,             //0 to 1+
-                 filterType: 2,         //0 to 7, corresponds to the filter types in the native filter node: lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass in that order
+                 filterType: parseInt($('#knob-filterType').attr('data-value')),         //0 to 7, corresponds to the filter types in the native filter node: lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass in that order
              });
-                 
+             
+    var filterGain = context.createGain();
+    filterGain.gain.value = parseFloat($('#knob-filterGain').attr('data-value'))/100;
+
     // TREMOLO
     // ******************************
     var tremolo = new tuna.Tremolo({
@@ -124,18 +127,22 @@ $(document).ready(function () {
                   stereoPhase: 0,    //0 to 180
                   bypass: 1
               });
-
+             
+             
     // OVERDRIVE
     // ******************************              
     var overdrive = new tuna.Overdrive({
-                    outputGain: 0.2,         //0 to 1+
+                    //outputGain: parseFloat( $('#knob-odLevel').attr('data-value') ),         //0 to 1+
+                    outputGain: 0.5,         //0 to 1+
                     drive: 0.7,              //0 to 1
-                    curveAmount: parseFloat($('#knob-amount').attr('data-value'))/100,          //0 to 1
-                    algorithmIndex: 2,       //0 to 5, selects one of our drive algorithms
+                    curveAmount: parseFloat($('#knob-drive').attr('data-value'))/100,          //0 to 1
+                    algorithmIndex: 0,       //0 to 5, selects one of our drive algorithms
                     bypass: 1
                 });
+
     var odLevel = context.createGain();
     odLevel.gain.value = parseFloat($('#knob-odLevel').attr('data-value'))/OD_LEVEL_FACTOR;
+
     // DELAY
     // ******************************
     delay = context.createDelayNode(),
@@ -170,12 +177,13 @@ $(document).ready(function () {
     vca2.connect(panner);
     
     panner.connect(overdrive.input);
-    overdrive.connect(odLevel);
+    overdrive.connect(filter.input);
     odLevel.connect(filter.input);
     filter.connect(tremolo.input);
+    filterGain.connect(tremolo.input);
     tremolo.connect(context.destination); // delay direct out
     tremolo.connect(delay);
-    
+
     
     var noteToFrequency = function(note) { return  Math.pow(2, (note-58) / 12) * 440.0; }
     
@@ -184,7 +192,7 @@ $(document).ready(function () {
         // play osc 1
         vco.noteOn(0);
         vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
-        octave1 = parseFloat( $('#knob-octave1').attr('data-value') );
+        octave1 = 1+parseInt( $('#knob-octave1').attr('data-value') );
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
         detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
         vco.frequency.cancelScheduledValues(0);
@@ -198,7 +206,7 @@ $(document).ready(function () {
         // play osc 1
         vco2.noteOn(0);
         vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
-        octave2 = parseFloat( $('#knob-octave2').attr('data-value') );
+        octave2 = 1+parseInt( $('#knob-octave2').attr('data-value') );
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
         detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
         vco2.frequency.cancelScheduledValues(0);
@@ -240,10 +248,10 @@ $(document).ready(function () {
     // LOAD DEFAULTS FROM HTML
     // **********************************************************************
      
-    octave1 = parseInt($('#knob-octave1').attr('data-value'));
+    octave1 = 1+parseInt($('#knob-octave1').attr('data-value'));
     volume1 = parseFloat($('#knob-volume1').attr('data-value'))/100;
     detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
-    octave2 = parseInt($('#knob-octave2').attr('data-value'));
+    octave2 = 1+parseInt($('#knob-octave2').attr('data-value'));
     volume2 = parseFloat($('#knob-volume2').attr('data-value'))/100;
     detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
     portamento = parseFloat($('#knob-portamento').attr('data-value'))/PORTAMENTO_FACTOR;
@@ -433,10 +441,10 @@ $(document).ready(function () {
                 volume2 = parseFloat(value )/100;
             }
             else if( id == 'knob-octave1' ){
-                octave1 = parseInt(value );
+                octave1 = 1+parseInt(value);
             }
             else if( id == 'knob-octave2' ){
-                octave2 = parseInt(value );
+                octave2 = 1+    parseInt(value );
             }
             else if( id == 'knob-osc1Type' ){
                 vco.type = parseInt(value );
@@ -481,7 +489,7 @@ $(document).ready(function () {
                  tremolo.intensity = parseFloat(value)/100; 
             }
             else if( id == 'knob-filterFreq' ){
-                 val= 20 + 4000 * parseFloat(value)/100;
+                 val= 20 + 20 * parseFloat(value);
                  filter.frequency  = val;
                  console.log(val);
             }
@@ -494,14 +502,15 @@ $(document).ready(function () {
                  filter.filterType = parseFloat(value);
             }
             else if( id == 'knob-filterGain' ){
-                 filter.gain = -20 + 20 * parseFloat(value)/100;
+                 //filter.gain = -20 + 20 * parseFloat(value)/100;
+                 filterGain.gain.value = 1+ 2*zxczxcparseFloat(value-50)/100;
             }
-            else if( id == 'knob-amount' ){
+            else if( id == 'knob-drive' ){
                  overdrive.curveAmount = parseFloat(value)/100;
-                 console.log('Curveamount: '+ parseFloat(value)/100);
             }
             else if( id == 'knob-odLevel' ){
                  odLevel.gain.value = parseFloat(value)/OD_LEVEL_FACTOR;
+                 //overdrive.outputGain = parseFloat(value);
             }
             
         }               
@@ -518,13 +527,29 @@ $(document).ready(function () {
             else tremolo.bypass = 0;
         }
         else if(id=='sw-filter'){
-            if(val == 0) filter.bypass = 1;
-            else filter.bypass = 0;
+            if(val == 0) {
+                filter.bypass = 1;
+                filter.disconnect();
+                filter.connect(tremolo.input);
+            }
+            else {
+                filter.disconnect();
+                filter.connect(filterGain);
+                filter.bypass = 0;
+            }
         }
         else if(id=='sw-overdrive'){
             $(this).attr('data-value', val);
-            if(val == 0) overdrive.bypass = 1;
-            else overdrive.bypass = 0;
+            if(val == 0) {
+                overdrive.disconnect();
+                overdrive.connect(filter.input);
+                overdrive.bypass = 1;
+            }
+            else {
+                overdrive.disconnect();
+                overdrive.connect(odLevel);
+                overdrive.bypass = 0;
+                }
         }
         
     });
