@@ -31,7 +31,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#868c93', end
 
 background-size: 100% auto;
 background-repeat: no-repeat;
-height: 100%;
+height: calc(100% - 40px);
+padding-top: 30px;
 }
 
 body {
@@ -200,6 +201,10 @@ overflow: hidden;
 .ringWaveform
     {
     background: url('../img/knobRingWaveform.svg');
+}
+.ringFilter
+    {
+    background: url('../img/knobRingFilter.svg');
 }
 .knobRing {
     position: absolute;

@@ -1,0 +1,123 @@
+a , a:visited, a:hover{
+    text-decoration: none;
+}
+
+/* ************************************************** */
+/* TOP BAR                                            */
+/* ************************************************** */
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+
+.toolBar{
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #555;
+    width: 100%;
+    height: 25px;
+    margin-bottom:10px;
+    position: fixed;
+    left:0;
+    z-index: 200;
+    box-shadow: 0 0 5px rgba(0,0,0,1);
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top,  #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #ffffff 0%,#e5e5e5 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.toolBar.top{
+    top:0;
+}
+
+.toolBar ul{
+    height: 100%;
+    margin-top: 0;
+    padding-top: 3px;
+}
+
+.toolBar ul li{
+    display: inline;
+    list-style-type: none;
+    padding-right: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    vertical-align: bottom;
+    text-align: center;
+}
+
+.toolBar ul li:hover{
+    color: #000;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.toolBar ul li a{
+    text-decoration: none;
+    display: inline;
+}
+
+/* ************************************************** */
+/* WINDOWS                                            */
+/* ************************************************** */
+
+.windowsContainer{
+    position: absolute;
+    top:0;
+    left:0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display:none;
+}
+.window{
+    position: relative;
+    min-width: 50%;
+    min-height: 50%;
+    margin: 2%;
+    margin-top: 50px;
+    padding: 20px;
+    background: rgba(0,0,0,0.9);
+    border: 1px solid #fff;
+    border-radius: 4px;
+    box-shadow: 8px 8px 8px rgba(0,0,0,0.5), inset 0 0 4px rgba(0,0,0,0.4);
+    color: #fff;
+    display:none;
+}
+
+.window h1{
+    width:100%;
+    text-align: center;
+    font-size: 2.1em;
+}
+.window p{
+    line-height: 18px;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.window a {
+    text-decoration: none;
+    color: #fff;
+    display: inline-block;
+}
+.window a:hover{
+    text-decoration: underline;
+}
+.window .windowClose{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    /* border: 2px solid #444; */
+    background: #fff;
+    border-radius: 10px;
+    color: #222;
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    z-index: 120;
+    cursor: pointer;
+}

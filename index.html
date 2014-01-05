@@ -4,16 +4,24 @@
     <meta charset="utf-8">
     <title>Freakk Synth</title>
     <link rel="stylesheet" href="css/freakk_synth.css">
+    <link rel="stylesheet" href="css/ui.css">
     <link rel="stylesheet" href="lib/knobs/knobs.css">
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
   </head>
   <body>
-    <div class="main_container">
+    <div class="toolBar top">
+        <ul>
+            <li id="link-home"><a href="http://www.freakk.net">Home</a></li>
+            <li id="link-keyboard">Keyboard</li>
+            <li id="link-about">About</li>
+        </ul>
+    </div>
+  <div class="main_container">
         <div class="frame_piece frame_left" ></div>
         <div class="center_section">
             <div class="frame_piece frame_top" ></div> 
             <div id="knobContainer">
-            
+
                 <!-- OSC 1 -->
                 <div class="paramGroup">
                     <div class="moduleLabel">OSC 1</div>
@@ -106,7 +114,7 @@
                     <div class="moduleLabel">FILTER</div>
                     <div id="knob-filterType" class="knob"  data-role="filterType"  data-type="stepped" data-value="0" data-steps="2">
                         <div class="knobCaption">TYPE</div>
-                        <div class="knobRing ring4"></div>
+                        <div class="knobRing ringFilter"></div>
                     </div>
                     <div id="knob-filterGain" class="knob" data-role="filterGain" data-type="continuous" data-value="50"  >
                         <div class="knobCaption">GAIN</div>
@@ -170,12 +178,32 @@
         </div> <!-- /center_section -->
          <div class="frame_piece frame_right" ></div>
     </div> <!-- /main_container -->
-   
+   <div class="windowsContainer">
+       <div class="window" id="keyboardLayout">
+            <h1>Keyboard Layout</h1>
+            <div class="windowClose">x</div>
+            <img src="img/key_layout.svg" style="width: 100%;" alt="" />
+       </div>
+       <div class="window" id="aboutWindow">
+            <h1>About</h1>
+            <div class="windowClose">x</div>
+            <p>
+                Freakk 2013 
+            </p>
+            <p>
+                Absynthe runs on Web Audio API and <a href="https://github.com/Dinahmoe/tuna" target="_blank">Tuna.js</a> library <br/>
+                Chrome or Safari browser requested.<br/>
+                Check <a href="http://caniuse.com/audio-api" target="_blank">this page</a> to verify your platform and browser compatibility with Web Audio.
+            </p>
+       </div>
+
+   </div>
     
     <script src="script/AudioContextMonkeyPatch.js"></script>
     <script src="lib/knobs/knobs.js"></script>
     <script src="lib/tuna-master/tuna.js"></script>
     <script src="script/freakk_synth.js" type="text/javascript"></script>
+    <script src="script/ui.js" type="text/javascript"></script>
     
   </body>
 </html>

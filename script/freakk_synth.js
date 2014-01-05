@@ -1,5 +1,3 @@
-
-
 $(document).ready(function () {
     // OS Detection
     var isWindows = (navigator.appVersion.indexOf("Win")!=-1);
@@ -111,7 +109,7 @@ $(document).ready(function () {
     var filter = new tuna.Filter({
                  frequency: 1 + 20 * parseFloat($('#knob-filterFreq').attr('data-value')),       //20 to 2000
                  Q: 1 + 49 * parseFloat($('#knob-filterQ').attr('data-value'))/100,                  //0.001 to 100
-                 gain: -20 + 20 *  parseFloat($('#knob-filterGain').attr('data-value'))/100,               //-40 to 40
+                 gain: 0,               //-40 to 40
                  bypass: 1,             //0 to 1+
                  filterType: parseInt($('#knob-filterType').attr('data-value')),         //0 to 7, corresponds to the filter types in the native filter node: lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass in that order
              });
@@ -194,9 +192,9 @@ $(document).ready(function () {
         vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
         octave1 = 1+parseInt( $('#knob-octave1').attr('data-value') );
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
-        detune1 = (parseInt( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
+        detune1 = (parseFloat( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
         vco.frequency.cancelScheduledValues(0);
-        vco.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave1 + 12 * keyOctSwitch ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ), 0, portamento );
+        vco.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave1 + 12 * keyOctSwitch ) * ( 1 + ( Math.pow(2, detune1*7 / 12) -1 ) ), 0, portamento );
         //vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         //console.log( "freq = " + vco.frequency.value );
        
@@ -208,9 +206,9 @@ $(document).ready(function () {
         vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
         octave2 = 1+parseInt( $('#knob-octave2').attr('data-value') );
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
-        detune2 = (parseInt( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
+        detune2 = (parseFloat( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
         vco2.frequency.cancelScheduledValues(0);
-        vco2.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave2 + 12 * keyOctSwitch) * ( 1 + detune2 *  ( Math.pow(2, 1 / 12) -1 ) ), 0, portamento );
+        vco2.frequency.setTargetAtTime( noteToFrequency( keyNum  + 12 * octave2 + 12 * keyOctSwitch) * ( 1 + ( Math.pow(2, detune2*7 / 12) -1 ) ), 0, portamento );
         //vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) ); 
         //console.log( "freq = " + vco2.frequency.value );
        
@@ -440,17 +438,19 @@ $(document).ready(function () {
             else if( id == 'knob-volume2' ){
                 volume2 = parseFloat(value )/100;
             }
-            else if( id == 'knob-octave1' ){
-                octave1 = 1+parseInt(value);
-            }
-            else if( id == 'knob-octave2' ){
-                octave2 = 1+    parseInt(value );
-            }
             else if( id == 'knob-osc1Type' ){
                 vco.type = parseInt(value );
             }
             else if( id == 'knob-osc2Type' ){
                 vco2.type = parseInt(value );
+            }
+            /*
+            // Comment out octave and detune cause we want to handle them live inside the playNote() function
+           else if( id == 'knob-octave1' ){
+                octave1 = 1+parseInt(value);
+            }
+            else if( id == 'knob-octave2' ){
+                octave2 = 1+    parseInt(value );
             }
             else if( id == 'knob-detune1' ){
                detune1 = (parseFloat(value ) - 50 ) * .02;
@@ -458,6 +458,7 @@ $(document).ready(function () {
             else if( id == 'knob-detune2' ){
                detune2 = (parseFloat(value ) - 50 ) * .02;
             }
+            */
             else if( id == 'knob-delayTime' ){
                 delay.delayTime.value = maxDelayTime * parseFloat(value)/100;
             }
@@ -503,7 +504,7 @@ $(document).ready(function () {
             }
             else if( id == 'knob-filterGain' ){
                  //filter.gain = -20 + 20 * parseFloat(value)/100;
-                 filterGain.gain.value = 1+ 2*zxczxcparseFloat(value-50)/100;
+                 filterGain.gain.value = 1+ 2*parseFloat(value-50)/100;
             }
             else if( id == 'knob-drive' ){
                  overdrive.curveAmount = parseFloat(value)/100;
