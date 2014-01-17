@@ -188,7 +188,7 @@ $(document).ready(function () {
     var playNote = function(keyNum){
         activeNotes.push( keyNum );
         // play osc 1
-        vco.noteOn(0);
+        //vco.noteOn(0);
         vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
         octave1 = 1+parseInt( $('#knob-octave1').attr('data-value') );
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
@@ -202,7 +202,7 @@ $(document).ready(function () {
         vca.gain.cancelScheduledValues(0);
         vca.gain.setTargetAtTime(volume1, 0, attack);
         // play osc 1
-        vco2.noteOn(0);
+        //vco2.noteOn(0);
         vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
         octave2 = 1+parseInt( $('#knob-octave2').attr('data-value') );
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
