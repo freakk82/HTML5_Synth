@@ -43,6 +43,7 @@ $(document).ready(function () {
     var ATT_OFFSET = 0.001;
     var REL_OFFSET = 0.01;
     var PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
+	var OSC_TYPES = ['sine','square','triangle','sawtooth'];
     // **********************************************************************
     // SYNTH CORE
     // **********************************************************************
@@ -60,8 +61,8 @@ $(document).ready(function () {
     // *********************************************  
     /* VCO */
     var vco = context.createOscillator();
-    vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
-    vco.frequency.value = this.frequency;
+    vco.type = OSC_TYPES[parseInt($('#knob-osc1Type').attr('data-value'))];
+    //vco.frequency.value = this.frequency;
     vco.start(0);
 
     /* VCA */
@@ -72,8 +73,8 @@ $(document).ready(function () {
     // *********************************************  
     /* VCO 2 */
     var vco2 = context.createOscillator();
-    vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
-    vco2.frequency.value = this.frequency;
+    vco2.type = OSC_TYPES[parseInt($('#knob-osc2Type').attr('data-value'))];
+    //vco2.frequency.value = this.frequency;
     vco2.start(0);
 
     /* VCA 2*/
@@ -143,9 +144,9 @@ $(document).ready(function () {
 
     // DELAY
     // ******************************
-    delay = context.createDelayNode(),
-    feedback = context.createGainNode(),
-    wetLevel = context.createGainNode();
+    delay = context.createDelay(),
+    feedback = context.createGain(),
+    wetLevel = context.createGain();
 
     //set fixed parameters
     maxDelayFeedback =  1;
@@ -189,7 +190,7 @@ $(document).ready(function () {
         activeNotes.push( keyNum );
         // play osc 1
         //vco.noteOn(0);
-        vco.type = parseInt($('#knob-osc1Type').attr('data-value'));
+        vco.type = OSC_TYPES[parseInt($('#knob-osc1Type').attr('data-value'))];
         octave1 = 1+parseInt( $('#knob-octave1').attr('data-value') );
         volume1 = parseFloat( $('#knob-volume1').attr('data-value') )/100;
         detune1 = (parseFloat( $('#knob-detune1').attr('data-value') ) - 50 ) * .02;
@@ -203,7 +204,7 @@ $(document).ready(function () {
         vca.gain.setTargetAtTime(volume1, 0, attack);
         // play osc 1
         //vco2.noteOn(0);
-        vco2.type = parseInt($('#knob-osc2Type').attr('data-value'));
+        vco2.type = OSC_TYPES[parseInt($('#knob-osc2Type').attr('data-value'))];
         octave2 = 1+parseInt( $('#knob-octave2').attr('data-value') );
         volume2 = parseFloat( $('#knob-volume2').attr('data-value') )/100;
         detune2 = (parseFloat( $('#knob-detune2').attr('data-value') ) - 50 ) * .02;
@@ -439,10 +440,10 @@ $(document).ready(function () {
                 volume2 = parseFloat(value )/100;
             }
             else if( id == 'knob-osc1Type' ){
-                vco.type = parseInt(value );
+                vco.type = OSC_TYPES[parseInt(value )];
             }
             else if( id == 'knob-osc2Type' ){
-                vco2.type = parseInt(value );
+                vco2.type = OSC_TYPES[parseInt(value )];
             }
             /*
             // Comment out octave and detune cause we want to handle them live inside the playNote() function

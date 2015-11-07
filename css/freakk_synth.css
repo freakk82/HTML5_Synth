@@ -15,7 +15,7 @@ form, input, h1, h2, button, label, a, img {
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold);
 
 html {
-    font:62.5%/1 "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+font:62.5%/1 "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 /*     background-color: hsla(0,0%,90%,1);  
     background-image: linear-gradient(-45deg, hsla(0,0%,0%,0), hsla(0,0%,0%,.05) );
     background-size: 5px; */
