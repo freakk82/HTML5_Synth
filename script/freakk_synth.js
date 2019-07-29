@@ -1,58 +1,114 @@
+// **********************************************************************
+// OS
+// **********************************************************************
+const OS = Object.freeze({
+  UNKNOWN: "UNKNOWN",
+  WIN: "WIN",
+  MAC: "MAC",
+  LINUX: "LINUX",
+  UNIX: "UNIX",
+  ANDROID: "ANDROID",
+});
+
+function detectOS() {
+  const appVersion = navigator && navigator.appVersion;
+  const userAgent = navigator && navigator.userAgent;
+
+  if(appVersion) {
+    if(navigator.appVersion.indexOf("Win") != -1) {
+      return OS.WIN;
+    } else if(navigator.appVersion.indexOf("Mac") != -1) {
+      return OS.MAC;
+    } else if(navigator.appVersion.indexOf("X11") != -1) {
+      return OS.UNIX;
+    } else if(navigator.appVersion.indexOf("Linux") != -1) {
+      return OS.LINUX
+    } else {
+      return OS.UNKNOWN;
+    }
+  } else if (userAgent) {
+    if(navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+      return OS.ANDROID;
+    } else {
+      return OS.UNKNOWN;
+    }
+  } else {
+    return OS.UNKNOWN;
+  }
+}
+
+
+
+// **********************************************************************
+// BROWSER
+// **********************************************************************
+const BROWSER = Object.freeze({
+  CHROME: "CHROME",
+  FIREFOX: "FIREFOX",
+  SAFARI: "SAFARI",
+  OPERA: "OPERA",
+  IE: "IE",
+  UNKNOWN: "UNKNOWN",
+});
+
+function detectBrowser() {
+  const isOpera = window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+  if(isOpera) {
+    // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+    return BROWSER.OPERA;
+  } else if(typeof InstallTrigger !== 'undefined') {
+    // Firefox 1.0+
+    return BROWSER.FIREFOX;
+  } else if( Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {;
+    // At least Safari 3+: "[object HTMLElementConstructor]"
+    return BROWSER.SAFARI
+  } else if(!!window.chrome && !isOpera) {
+    return BROWSER.CHROME;
+  } else if(!!document.documentMode) {
+    return BROWSER.IE;
+  } else {
+    return BROWSER.UNKNOWN;
+  }
+}
+
+// **********************************************************************
+// UTILS
+// **********************************************************************
+
+function noteToFrequency (note) {
+  return Math.pow(2, (note - 58) / 12) * 440.0;
+}
+
+// **********************************************************************
+// MAIN
+// **********************************************************************
 $(document).ready(function () {
-  // OS Detection
-  var isWindows = (navigator.appVersion.indexOf("Win") != -1);
-  var isMac = (navigator.appVersion.indexOf("Mac") != -1);
-  var isUnix = (navigator.appVersion.indexOf("X11") != -1);
-  var isLinux = (navigator.appVersion.indexOf("Linux") != -1);
-  var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1; //&& ua.indexOf("mobile");
-
-  var OSName = "Unknown OS";
-  if (isWindows) OSName = "Windows";
-  if (isMac) OSName = "MacOS";
-  if (isUnix) OSName = "UNIX";
-  if (isLinux) OSName = "Linux";
-  if (isAndroid) OSName = "Android";
-
-  console.log("OS: " + OSName);
-
-  // Browser DeteCtion
-  var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0; // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
-  var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
-  var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0; // At least Safari 3+: "[object HTMLElementConstructor]"
-  var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
-  var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
-
-  var BrowserName = "Unknown Browser";
-  if (isChrome) BrowserName = "Chrome";
-  if (isFirefox) BrowserName = "Firefox";
-  if (isSafari) BrowserName = "Safari";
-  //if (isAndroidBrowser) BrowserName="AndroidBrowser";
-  if (isIE) BrowserName = "IE";
-  if (isOpera) BrowserName = "Opera";
-
-  console.log("Browser: " + BrowserName);
-
+  const os = detectOS(navigator);
+  console.log("OS: " + os);
+  const browser = detectBrowser();
+  console.log("Browser: " + browser);
 
   // **********************************************************************
   // GLOBALS
   // **********************************************************************
-  var MAX_OCTAVE = 2;
-  var TREM_RATE_MULTIPLIER = 12;
-  var PHASER_RATE_MULTIPLIER = 10;
-  var OD_LEVEL_FACTOR = 100;
-  var ATT_OFFSET = 0.001;
-  var REL_OFFSET = 0.01;
-  var PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
-  var OSC_TYPES = ['sine', 'square', 'triangle', 'sawtooth'];
+  const MAX_OCTAVE = 2;
+  const TREM_RATE_MULTIPLIER = 12;
+  const PHASER_RATE_MULTIPLIER = 10;
+  const OD_LEVEL_FACTOR = 100;
+  const ATT_OFFSET = 0.001;
+  const REL_OFFSET = 0.01;
+  const PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
+  const OSC_TYPES = ['sine', 'square', 'triangle', 'sawtooth'];
+
   // **********************************************************************
   // SYNTH CORE
   // **********************************************************************
-  var context;
+  let context;
   try {
     // Fix up for prefixing
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
     context = new AudioContext();
-    if(isChrome) {
+    if(browser === BROWSER.CHROME) {
       context.resume();
     }
   } catch (e) {
@@ -62,54 +118,54 @@ $(document).ready(function () {
   // OSCILLATOR 1
   // *********************************************
   /* VCO */
-  var vco = context.createOscillator();
+  const vco = context.createOscillator();
   vco.type = OSC_TYPES[parseInt($('#knob-osc1Type').attr('data-value'))];
   //vco.frequency.value = this.frequency;
   vco.start(0);
 
   /* VCA */
-  var vca = context.createGain();
+  const vca = context.createGain();
   vca.gain.value = 0;
 
   // OSCILLATOR 2
   // *********************************************
   /* VCO 2 */
-  var vco2 = context.createOscillator();
+  const vco2 = context.createOscillator();
   vco2.type = OSC_TYPES[parseInt($('#knob-osc2Type').attr('data-value'))];
   //vco2.frequency.value = this.frequency;
   vco2.start(0);
 
   /* VCA 2*/
-  var vca2 = context.createGain();
+  const vca2 = context.createGain();
   vca2.gain.value = 0;
 
 
-  var volume1 = 1;
-  var octave1 = 2;
-  var detune1 = 50;
+  let volume1 = 1;
+  let octave1 = 2;
+  let detune1 = 50;
 
 
-  var volume2 = 1;
-  var octave2 = 2;
-  var detune2 = 50;
+  let volume2 = 1;
+  let octave2 = 2;
+  let detune2 = 50;
 
 
-  var attack = 0.01;      // attack speed
-  var release = 0.01;   // release speed
-  var portamento = 0;  // portamento/glide speed
-  var decay = 0; // TO DO
-  var sustain = 0; // TO DO
-  var activeNotes = []; // the stack of actively-pressed keys
+  let attack = 0.01;      // attack speed
+  let release = 0.01;   // release speed
+  let portamento = 0;  // portamento/glide speed
+  let decay = 0; // TO DO
+  let sustain = 0; // TO DO
+  let activeNotes = []; // the stack of actively-pressed keys
 
-  var keyOctSwitch = 0;
+  let keyOctSwitch = 0;
 
   // TUNA
   // ******************************
-  var tuna = new Tuna(context);
+  const tuna = new Tuna(context);
 
   // Filter
   // ******************************
-  var filter = new tuna.Filter({
+  const filter = new tuna.Filter({
     frequency: 1 + 20 * parseFloat($('#knob-filterFreq').attr('data-value')),       //20 to 2000
     Q: 1 + 49 * parseFloat($('#knob-filterQ').attr('data-value')) / 100,                  //0.001 to 100
     gain: 0,               //-40 to 40
@@ -117,12 +173,12 @@ $(document).ready(function () {
     filterType: parseInt($('#knob-filterType').attr('data-value')),         //0 to 7, corresponds to the filter types in the native filter node: lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch, allpass in that order
   });
 
-  var filterGain = context.createGain();
+  const filterGain = context.createGain();
   filterGain.gain.value = parseFloat($('#knob-filterGain').attr('data-value')) / 100;
 
   // TREMOLO
   // ******************************
-  var tremolo = new tuna.Tremolo({
+  const tremolo = new tuna.Tremolo({
     intensity: parseFloat($('#knob-tremoloIntensity').attr('data-value')) / 100,    //0 to 1
     rate: TREM_RATE_MULTIPLIER * parseFloat($('#knob-tremoloRate').attr('data-value')) / 100,         //0.001 to 8
     stereoPhase: 0,    //0 to 180
@@ -132,7 +188,7 @@ $(document).ready(function () {
 
   // OVERDRIVE
   // ******************************
-  var overdrive = new tuna.Overdrive({
+  const overdrive = new tuna.Overdrive({
     //outputGain: parseFloat( $('#knob-odLevel').attr('data-value') ),         //0 to 1+
     outputGain: 0.5,         //0 to 1+
     drive: 0.7,              //0 to 1
@@ -141,14 +197,14 @@ $(document).ready(function () {
     bypass: 1
   });
 
-  var odLevel = context.createGain();
+  const odLevel = context.createGain();
   odLevel.gain.value = parseFloat($('#knob-odLevel').attr('data-value')) / OD_LEVEL_FACTOR;
 
   // DELAY
   // ******************************
-  delay = context.createDelay(),
-    feedback = context.createGain(),
-    wetLevel = context.createGain();
+  delay = context.createDelay();
+  feedback = context.createGain();
+  wetLevel = context.createGain();
 
   //set fixed parameters
   maxDelayFeedback = 1;
@@ -168,7 +224,7 @@ $(document).ready(function () {
   // SIGNAL ROUTING
   // **********************************************************************
 
-  var panner = context.createPanner();
+  const panner = context.createPanner();
   // default to straight ahead
   panner.setPosition(0.0, 1.0, 0.0);
 
@@ -185,12 +241,7 @@ $(document).ready(function () {
   tremolo.connect(context.destination); // delay direct out
   tremolo.connect(delay);
 
-
-  var noteToFrequency = function (note) {
-    return Math.pow(2, (note - 58) / 12) * 440.0;
-  }
-
-  var playNote = function (keyNum) {
+  const playNote = function (keyNum) {
     activeNotes.push(keyNum);
     // play osc 1
     //vco.noteOn(0);
@@ -222,8 +273,8 @@ $(document).ready(function () {
     vca2.gain.setTargetAtTime(volume2, 0, attack);
   }
 
-  var muteNote = function (keyNum) {
-    var position = activeNotes.indexOf(keyNum);
+  const muteNote = function (keyNum) {
+    const position = activeNotes.indexOf(keyNum);
     if (position != -1) {
       activeNotes.splice(position, 1);
     }
@@ -272,23 +323,23 @@ $(document).ready(function () {
   // KEYBOARD DRAW
   // **********************************************************************
 
-  // Variables
-  var keyboardWidth = $("#keyboardContainer").width(); //retrieve current window width
-  var windowHeight = $(window).height(); //retrieve current window height
-  var NUM_KEYS = 48;
-  var isKeyDown = [];
-  var numOctaves = (NUM_KEYS / 12);
-  var numWhiteKeys = numOctaves * 7;
-  var numBlackKeys = numOctaves * 5;
-  var whiteKeyWidth = (keyboardWidth / numWhiteKeys);
-  var blackKeyWidth = whiteKeyWidth * 0.6;
+  // letiables
+  const keyboardWidth = $("#keyboardContainer").width(); //retrieve current window width
+  const windowHeight = $(window).height(); //retrieve current window height
+  const NUM_KEYS = 48;
+  const isKeyDown = [];
+  const numOctaves = (NUM_KEYS / 12);
+  const numWhiteKeys = numOctaves * 7;
+  const numBlackKeys = numOctaves * 5;
+  const whiteKeyWidth = (keyboardWidth / numWhiteKeys);
+  const blackKeyWidth = whiteKeyWidth * 0.6;
   $('#keyboard').css("height", 0.1 * keyboardWidth);
 
   // White Keys
-  var j = 0
-  var wk = 0
-  var bk = 0
-  for (var i = 0; i < NUM_KEYS; i++) {
+  let j = 0
+  let wk = 0
+  let bk = 0
+  for (let i = 0; i < NUM_KEYS; i++) {
     j = i % 12;
     isKeyDown[i] = false;
     if (j == 1 || j == 3 || j == 6 || j == 8 || j == 10) {
@@ -320,9 +371,9 @@ $(document).ready(function () {
   // KEYBOARD EVENTS
   // ******************************************************
 
-  //var keyValues = { 90:"c", 83:"c#", 88:"d", 68:"d#", 67:"e", 86:"f", 71:"f#" , 66:"g", 72:"g#", 78:"a", 74:"a#", 77:"b"};
-  var noteNames = new Array("c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b");
-  var keyValues = {
+  //let keyValues = { 90:"c", 83:"c#", 88:"d", 68:"d#", 67:"e", 86:"f", 71:"f#" , 66:"g", 72:"g#", 78:"a", 74:"a#", 77:"b"};
+  const noteNames = new Array("c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b");
+  const keyValues = {
     90: 1, 83: 2, 88: 3, 68: 4, 67: 5, 86: 6, 71: 7, 66: 8, 72: 9, 78: 10, 74: 11, 77: 12,
     81: 13, 50: 14, 87: 15, 51: 16, 69: 17, 82: 18, 53: 19, 84: 20, 54: 21, 89: 22, 55: 23, 85: 24,
     73: 25, 57: 26, 79: 27, 48: 28
@@ -333,7 +384,7 @@ $(document).ready(function () {
   keyValues[52] = -1;
   keyValues[56] = -1;
 
-  var keyPressed = -1;
+  let keyPressed = -1;
   $(document).keydown(function (event) {
     keyPressed = event.which;
     note = (keyValues[keyPressed]);
@@ -383,7 +434,7 @@ $(document).ready(function () {
   // ******************************************************
   // MOUSE EVENTS
   // ******************************************************
-  var isMouseDown = false;
+  let isMouseDown = false;
 
   $(document).mouseup(function () {
     isMouseDown = false;
@@ -438,7 +489,7 @@ $(document).ready(function () {
   });
 
 
-  var parseKnobParam = function (id) {
+  const parseKnobParam = function (id) {
     value = $('#' + id).attr('data-value');
 
     if (id == 'knob-volume1') {
