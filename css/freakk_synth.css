@@ -83,7 +83,7 @@ a { text-decoration: none; display: block; }
 }
 
 #keyboard{
-width: 100  %;
+width: 100%;
 margin: auto;
 overflow: hidden;
 }
@@ -91,7 +91,7 @@ overflow: hidden;
 .whiteKey{
     background: #fff;
     position: absolute;
-    display: inlne-block;
+    display: inline-block;
     border: 1px solid #454545;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;

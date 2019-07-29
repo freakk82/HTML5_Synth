@@ -51,7 +51,10 @@ $(document).ready(function () {
   try {
     // Fix up for prefixing
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    context = (new AudioContext()).resume();
+    context = new AudioContext();
+    if(isChrome) {
+      context.resume();
+    }
   } catch (e) {
     alert('Web Audio API is not supported in this browser');
   }
