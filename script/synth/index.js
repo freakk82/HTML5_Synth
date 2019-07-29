@@ -1,104 +1,27 @@
-// **********************************************************************
-// OS
-// **********************************************************************
-const OS = Object.freeze({
-  UNKNOWN: "UNKNOWN",
-  WIN: "WIN",
-  MAC: "MAC",
-  LINUX: "LINUX",
-  UNIX: "UNIX",
-  ANDROID: "ANDROID",
-});
-
-function detectOS() {
-  const appVersion = navigator && navigator.appVersion;
-  const userAgent = navigator && navigator.userAgent;
-
-  if(appVersion) {
-    if(navigator.appVersion.indexOf("Win") != -1) {
-      return OS.WIN;
-    } else if(navigator.appVersion.indexOf("Mac") != -1) {
-      return OS.MAC;
-    } else if(navigator.appVersion.indexOf("X11") != -1) {
-      return OS.UNIX;
-    } else if(navigator.appVersion.indexOf("Linux") != -1) {
-      return OS.LINUX
-    } else {
-      return OS.UNKNOWN;
-    }
-  } else if (userAgent) {
-    if(navigator.userAgent.toLowerCase().indexOf("android") > -1) {
-      return OS.ANDROID;
-    } else {
-      return OS.UNKNOWN;
-    }
-  } else {
-    return OS.UNKNOWN;
-  }
-}
-
-
+import {detectOS} from "./lib/os.js";
+import {BROWSER, detectBrowser} from "./lib/browser.js";
+import {noteToFrequency} from "./lib/utils.js";
 
 // **********************************************************************
-// BROWSER
+// GLOBALS
 // **********************************************************************
-const BROWSER = Object.freeze({
-  CHROME: "CHROME",
-  FIREFOX: "FIREFOX",
-  SAFARI: "SAFARI",
-  OPERA: "OPERA",
-  IE: "IE",
-  UNKNOWN: "UNKNOWN",
-});
-
-function detectBrowser() {
-  const isOpera = window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-  if(isOpera) {
-    // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
-    return BROWSER.OPERA;
-  } else if(typeof InstallTrigger !== 'undefined') {
-    // Firefox 1.0+
-    return BROWSER.FIREFOX;
-  } else if( Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {;
-    // At least Safari 3+: "[object HTMLElementConstructor]"
-    return BROWSER.SAFARI
-  } else if(!!window.chrome && !isOpera) {
-    return BROWSER.CHROME;
-  } else if(!!document.documentMode) {
-    return BROWSER.IE;
-  } else {
-    return BROWSER.UNKNOWN;
-  }
-}
-
-// **********************************************************************
-// UTILS
-// **********************************************************************
-
-function noteToFrequency (note) {
-  return Math.pow(2, (note - 58) / 12) * 440.0;
-}
+const MAX_OCTAVE = 2;
+const TREM_RATE_MULTIPLIER = 12;
+const PHASER_RATE_MULTIPLIER = 10;
+const OD_LEVEL_FACTOR = 100;
+const ATT_OFFSET = 0.001;
+const REL_OFFSET = 0.01;
+const PORTAMENTO_FACTOR = 500; // reduces the max speed of portamento parameter
+const OSC_TYPES = Object.freeze(['sine', 'square', 'triangle', 'sawtooth']);
 
 // **********************************************************************
 // MAIN
 // **********************************************************************
 $(document).ready(function () {
-  const os = detectOS(navigator);
-  console.log("OS: " + os);
+  const os = detectOS();
   const browser = detectBrowser();
+  console.log("OS: " + os);
   console.log("Browser: " + browser);
-
-  // **********************************************************************
-  // GLOBALS
-  // **********************************************************************
-  const MAX_OCTAVE = 2;
-  const TREM_RATE_MULTIPLIER = 12;
-  const PHASER_RATE_MULTIPLIER = 10;
-  const OD_LEVEL_FACTOR = 100;
-  const ATT_OFFSET = 0.001;
-  const REL_OFFSET = 0.01;
-  const PORTAMENTO_FACTOR = 500; // reduces the max spped of portamento parameter
-  const OSC_TYPES = ['sine', 'square', 'triangle', 'sawtooth'];
 
   // **********************************************************************
   // SYNTH CORE
@@ -202,13 +125,13 @@ $(document).ready(function () {
 
   // DELAY
   // ******************************
-  delay = context.createDelay();
-  feedback = context.createGain();
-  wetLevel = context.createGain();
+  const delay = context.createDelay();
+  const feedback = context.createGain();
+  const wetLevel = context.createGain();
 
   //set fixed parameters
-  maxDelayFeedback = 1;
-  maxDelayTime = 1; //seconds
+  const maxDelayFeedback = 1;
+  const maxDelayTime = 1; //seconds
 
   delay.delayTime.value = 0; //150 ms delay
   feedback.gain.value = 0;
@@ -317,7 +240,7 @@ $(document).ready(function () {
   feedback.gain.value = parseFloat($('#knob-delayFeedback').attr('data-value')) / 100;
   wetLevel.gain.value = parseFloat($('#knob-delayVolume').attr('data-value')) / 100;
 
-  knobEditing = false;
+  let knobEditing = false;
 
   // **********************************************************************
   // KEYBOARD DRAW
@@ -339,6 +262,9 @@ $(document).ready(function () {
   let j = 0
   let wk = 0
   let bk = 0
+  let keyId = "k";
+  let posX = 0;
+
   for (let i = 0; i < NUM_KEYS; i++) {
     j = i % 12;
     isKeyDown[i] = false;
@@ -385,6 +311,7 @@ $(document).ready(function () {
   keyValues[56] = -1;
 
   let keyPressed = -1;
+  let note = -1;
   $(document).keydown(function (event) {
     keyPressed = event.which;
     note = (keyValues[keyPressed]);
@@ -561,6 +488,8 @@ $(document).ready(function () {
   // ******************************************************
   // SWITCH EVENTS
   // ******************************************************
+  let id = null;
+  let val = null;
   $('.switchContainer').mouseup(function () {
     id = $(this).attr('id');
     val = parseFloat($(this).attr('data-value'));
