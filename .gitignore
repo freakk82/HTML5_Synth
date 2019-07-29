@@ -1,0 +1,8 @@
+# Webstorm
+.idea/
+
+# NodeJS
+node_modules/
+
+# Temp directories
+temp/
