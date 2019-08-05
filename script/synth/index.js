@@ -1,88 +1,44 @@
+"use strict";
+
 import {detectOS} from "./lib/os.js";
-import {BROWSER, detectBrowser} from "./lib/browser.js";
-import {noteToFrequency} from "./lib/utils.js";
+import {detectBrowser} from "./lib/browser.js";
+import {getAudioContext, setPannerPosition} from "./lib/utils.js";
+import {WAVEFORMS_LIST, Oscillator} from "./lib/osc.js";
+import {Envelope} from "./lib/envelope.js";
+import {NotePlayer} from "./lib/notePlayer.js";
 
 // **********************************************************************
 // GLOBALS
 // **********************************************************************
 const MAX_OCTAVE = 2;
 const TREM_RATE_MULTIPLIER = 12;
-const PHASER_RATE_MULTIPLIER = 10;
 const OD_LEVEL_FACTOR = 100;
 const ATT_OFFSET = 0.001;
 const REL_OFFSET = 0.01;
 const PORTAMENTO_FACTOR = 500; // reduces the max speed of portamento parameter
-const OSC_TYPES = Object.freeze(['sine', 'square', 'triangle', 'sawtooth']);
 
 // **********************************************************************
 // MAIN
 // **********************************************************************
 $(document).ready(function () {
+
+  const NUM_OSC = $('.oscillator').length;
   const os = detectOS();
   const browser = detectBrowser();
   console.log("OS: " + os);
   console.log("Browser: " + browser);
-
-  // **********************************************************************
-  // SYNTH CORE
-  // **********************************************************************
-  let context;
-  try {
-    // Fix up for prefixing
-    window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    context = new AudioContext();
-    if(browser === BROWSER.CHROME) {
-      context.resume();
-    }
-  } catch (e) {
-    alert('Web Audio API is not supported in this browser');
+  const context = getAudioContext(browser);
+  const panner = context.createPanner();
+  setPannerPosition(panner, context, 1, 0, 0);
+  const oscillators = [];
+  for (let i = 0; i < NUM_OSC; ++i) {
+    oscillators.push(new Oscillator(context, panner));
   }
-
-  // OSCILLATOR 1
-  // *********************************************
-  /* VCO */
-  const vco = context.createOscillator();
-  vco.type = OSC_TYPES[parseInt($('#knob-osc1Type').attr('data-value'))];
-  //vco.frequency.value = this.frequency;
-  vco.start(0);
-
-  /* VCA */
-  const vca = context.createGain();
-  vca.gain.value = 0;
-
-  // OSCILLATOR 2
-  // *********************************************
-  /* VCO 2 */
-  const vco2 = context.createOscillator();
-  vco2.type = OSC_TYPES[parseInt($('#knob-osc2Type').attr('data-value'))];
-  //vco2.frequency.value = this.frequency;
-  vco2.start(0);
-
-  /* VCA 2*/
-  const vca2 = context.createGain();
-  vca2.gain.value = 0;
-
-
-  let volume1 = 1;
-  let octave1 = 2;
-  let detune1 = 50;
-
-
-  let volume2 = 1;
-  let octave2 = 2;
-  let detune2 = 50;
-
-
-  let attack = 0.01;      // attack speed
-  let release = 0.01;   // release speed
-  let portamento = 0;  // portamento/glide speed
-  let decay = 0; // TO DO
-  let sustain = 0; // TO DO
-  let activeNotes = []; // the stack of actively-pressed keys
-
+  const envelope = new Envelope();
+  const player = new NotePlayer(oscillators, envelope);
   let keyOctSwitch = 0;
 
-  // TUNA
+  // TUNA EFFECTS
   // ******************************
   const tuna = new Tuna(context);
 
@@ -147,15 +103,6 @@ $(document).ready(function () {
   // SIGNAL ROUTING
   // **********************************************************************
 
-  const panner = context.createPanner();
-  // default to straight ahead
-  panner.setPosition(0.0, 1.0, 0.0);
-
-  vco.connect(vca);
-  vca.connect(panner);
-  vco2.connect(vca2);
-  vca2.connect(panner);
-
   panner.connect(overdrive.input);
   overdrive.connect(filter.input);
   odLevel.connect(filter.input);
@@ -164,76 +111,9 @@ $(document).ready(function () {
   tremolo.connect(context.destination); // delay direct out
   tremolo.connect(delay);
 
-  const playNote = function (keyNum) {
-    activeNotes.push(keyNum);
-    // play osc 1
-    //vco.noteOn(0);
-    vco.type = OSC_TYPES[parseInt($('#knob-osc1Type').attr('data-value'))];
-    octave1 = 1 + parseInt($('#knob-octave1').attr('data-value'));
-    volume1 = parseFloat($('#knob-volume1').attr('data-value')) / 100;
-    detune1 = (parseFloat($('#knob-detune1').attr('data-value')) - 50) * .02;
-    vco.frequency.cancelScheduledValues(0);
-    vco.frequency.setTargetAtTime(noteToFrequency(keyNum + 12 * octave1 + 12 * keyOctSwitch) * (1 + (Math.pow(2, detune1 * 7 / 12) - 1)), 0, portamento);
-    //vco.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) );
-    //console.log( "freq = " + vco.frequency.value );
-
-    //vca.gain.value = volume1 ;
-    vca.gain.cancelScheduledValues(0);
-    vca.gain.setTargetAtTime(volume1, 0, attack);
-    // play osc 1
-    //vco2.noteOn(0);
-    vco2.type = OSC_TYPES[parseInt($('#knob-osc2Type').attr('data-value'))];
-    octave2 = 1 + parseInt($('#knob-octave2').attr('data-value'));
-    volume2 = parseFloat($('#knob-volume2').attr('data-value')) / 100;
-    detune2 = (parseFloat($('#knob-detune2').attr('data-value')) - 50) * .02;
-    vco2.frequency.cancelScheduledValues(0);
-    vco2.frequency.setTargetAtTime(noteToFrequency(keyNum + 12 * octave2 + 12 * keyOctSwitch) * (1 + (Math.pow(2, detune2 * 7 / 12) - 1)), 0, portamento);
-    //vco2.frequency.value = noteToFrequency( keyNum  + 12 * octave1 ) * ( 1 + detune1 *  ( Math.pow(2, 1 / 12) -1 ) );
-    //console.log( "freq = " + vco2.frequency.value );
-
-    //vca.gain.value = volume1 ;
-    vca2.gain.cancelScheduledValues(0);
-    vca2.gain.setTargetAtTime(volume2, 0, attack);
-  }
-
-  const muteNote = function (keyNum) {
-    const position = activeNotes.indexOf(keyNum);
-    if (position != -1) {
-      activeNotes.splice(position, 1);
-    }
-    if (activeNotes.length == 0) {  // shut off the envelope
-      vca.gain.cancelScheduledValues(0);
-      vca.gain.setTargetAtTime(0.0, 0, release);
-      vca2.gain.cancelScheduledValues(0);
-      vca2.gain.setTargetAtTime(0.0, 0, release);
-
-    } else {
-      vco.frequency.cancelScheduledValues(0);
-      vco.frequency.setTargetAtTime(noteToFrequency(activeNotes[activeNotes.length - 1] + 12 * octave1 + 12 * keyOctSwitch), 0, portamento);
-      vco2.frequency.cancelScheduledValues(0);
-      vco2.frequency.setTargetAtTime(noteToFrequency(activeNotes[activeNotes.length - 1] + 12 * octave2 + 12 * keyOctSwitch), 0, portamento);
-    }
-  }
-  /*
-  console.log("sine: "+vco.SINE);
-  console.log("square: "+vco.SQUARE);
-  console.log("sawtooth: "+vco.SAWTOOTH);
-  console.log("triangle: "+vco.TRIANGLE);
-  */
-
-  // **********************************************************************
-  // LOAD DEFAULTS FROM HTML
-  // **********************************************************************
-
-  octave1 = 1 + parseInt($('#knob-octave1').attr('data-value'));
-  volume1 = parseFloat($('#knob-volume1').attr('data-value')) / 100;
-  detune1 = (parseInt($('#knob-detune1').attr('data-value')) - 50) * .02;
-  octave2 = 1 + parseInt($('#knob-octave2').attr('data-value'));
-  volume2 = parseFloat($('#knob-volume2').attr('data-value')) / 100;
-  detune2 = (parseInt($('#knob-detune2').attr('data-value')) - 50) * .02;
-  portamento = parseFloat($('#knob-portamento').attr('data-value')) / PORTAMENTO_FACTOR;
-  attack = ATT_OFFSET + parseFloat($('#knob-attack').attr('data-value')) / 100;
-  release = REL_OFFSET + ($('#knob-release').attr('data-value')) / 100;
+  envelope.portamento = parseFloat($('#knob-portamento').attr('data-value')) / PORTAMENTO_FACTOR;
+  envelope.attack = ATT_OFFSET + parseFloat($('#knob-attack').attr('data-value')) / 100;
+  envelope.release = REL_OFFSET + ($('#knob-release').attr('data-value')) / 100;
 
   // Delay defaults
   delay.delayTime.value = parseFloat($('#knob-delayTime').attr('data-value')) / 100;
@@ -338,9 +218,9 @@ $(document).ready(function () {
     //vco.frequency.value = noteToFrequency(note); // set frequency
     //vco2.frequency.value = noteToFrequency(note); // set frequency
     else {
-      if (note > 0 && !isKeyDown[keyValues[event.which]]){
+      if (note > 0 && !isKeyDown[keyValues[event.which]]) {
         // check note validity and avoid bounce
-        context.resume().then(() => playNote(note));
+        context.resume().then(() => player.play(note, keyOctSwitch));
       }
       //alert(keyPressed);
       $('#k' + (keyValues[event.which] - 1)).addClass('active');
@@ -354,7 +234,7 @@ $(document).ready(function () {
     $('#k' + (keyValues[event.which] - 1)).removeClass('active');
     keyPressed = event.which;
     note = (keyValues[keyPressed]);
-    muteNote(note);
+    player.mute(note, keyOctSwitch);
     isKeyDown[keyValues[event.which]] = false;
   });
 
@@ -373,34 +253,26 @@ $(document).ready(function () {
 
   // MOUSE NOTE ON
   $('.key').mousedown(function () {
-    //isMouseDown = true;
     note = parseInt($(this).attr("data-keyNum"));
     $(this).addClass("active");
-    context.resume().then(() => playNote(note));
+    context.resume().then(() => player.play(note, keyOctSwitch));
   });
 
   $(".key").mouseover(function () {
     if (isMouseDown) {
       $(this).addClass("active");
-      context.resume().then(() => playNote(parseInt($(this).attr("data-keyNum"))));
+      context.resume().then(() => player.play(parseInt($(this).attr("data-keyNum")), keyOctSwitch));
     }
   });
 
   // MOUSE NOTE OFF
   $(".key").mouseup(function () {
-    //isMouseDown = false ;
-    /* $(this).removeClass("active");
-    vca.gain.value = 0;
-    vca2.gain.value = 0; */
     $(this).removeClass("active");
-    muteNote(parseInt($(this).attr("data-keyNum")));
+    player.mute(parseInt($(this).attr("data-keyNum")), keyOctSwitch);
   });
   $(".key").mouseleave(function () {
     $(this).removeClass("active");
-    /*vca.gain.value = 0;
-    vca2.gain.value = 0;
-    */
-    muteNote(parseInt($(this).attr("data-keyNum")));
+    player.mute(parseInt($(this).attr("data-keyNum")), keyOctSwitch);
   });
 
 
@@ -417,32 +289,16 @@ $(document).ready(function () {
 
 
   const parseKnobParam = function (id) {
-    value = $('#' + id).attr('data-value');
+    let value = $('#' + id).attr('data-value');
 
-    if (id == 'knob-volume1') {
-      volume1 = parseFloat(value) / 100;
-    } else if (id == 'knob-volume2') {
-      volume2 = parseFloat(value) / 100;
-    } else if (id == 'knob-osc1Type') {
-      vco.type = OSC_TYPES[parseInt(value)];
-    } else if (id == 'knob-osc2Type') {
-      vco2.type = OSC_TYPES[parseInt(value)];
+    if (id.includes('knob-volume')) {
+      const idx = parseInt(id.substr("knob-volume".length), 10);
+      oscillators[idx-1].volume = parseFloat(value) / 100;
+    } else if (id.includes('knob-waveform-')) {
+      const idx = parseInt(id.substr("knob-waveform-".length), 10);
+      oscillators[idx-1].vco.type = WAVEFORMS_LIST[parseInt(value)];
     }
-    /*
-    // Comment out octave and detune cause we want to handle them live inside the playNote() function
-   else if( id == 'knob-octave1' ){
-        octave1 = 1+parseInt(value);
-    }
-    else if( id == 'knob-octave2' ){
-        octave2 = 1+    parseInt(value );
-    }
-    else if( id == 'knob-detune1' ){
-       detune1 = (parseFloat(value ) - 50 ) * .02;
-    }
-    else if( id == 'knob-detune2' ){
-       detune2 = (parseFloat(value ) - 50 ) * .02;
-    }
-    */
+
     else if (id == 'knob-delayTime') {
       delay.delayTime.value = maxDelayTime * parseFloat(value) / 100;
     } else if (id == 'knob-delayFeedback') {
@@ -450,15 +306,15 @@ $(document).ready(function () {
     } else if (id == 'knob-delayVolume') {
       wetLevel.gain.value = parseFloat(value) / 100;
     } else if (id == 'knob-attack') {
-      attack = ATT_OFFSET + parseFloat(value) / 100;
+      envelope.attack = ATT_OFFSET + parseFloat(value) / 100;
     } else if (id == 'knob-decay') {
-      decay = parseFloat(value) / 100;
+      envelope.decay = parseFloat(value) / 100;
     } else if (id == 'knob-sustain') {
-      sustain = parseFloat(value) / 100;
+      envelope.sustain = parseFloat(value) / 100;
     } else if (id == 'knob-release') {
-      release = REL_OFFSET + parseFloat(value) / 100;
+      envelope.release = REL_OFFSET + parseFloat(value) / 100;
     } else if (id == 'knob-portamento') {
-      portamento = parseFloat(value) / PORTAMENTO_FACTOR;
+      envelope.portamento = parseFloat(value) / PORTAMENTO_FACTOR;
     } else if (id == 'knob-tremoloRate') {
       tremolo.rate = TREM_RATE_MULTIPLIER * parseFloat(value) / 100;
     } else if (id == 'knob-tremoloIntensity') {
