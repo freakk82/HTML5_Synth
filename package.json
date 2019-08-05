@@ -1,6 +1,6 @@
 {
   "name": "html5-synth",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "HTML5 WebAudio Synth",
   "main": "server.js",
   "scripts": {
