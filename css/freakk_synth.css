@@ -262,3 +262,13 @@ overflow: hidden;
     border: 1px solid #EDEDED;
     bottom: 0;
 }
+
+.paramGroup.oscilloscope {
+    width: 216px;
+    height: 114px;
+}
+
+#scope-container {
+    width: 100%;
+    height: 92px;
+}

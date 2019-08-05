@@ -6,6 +6,7 @@ import {getAudioContext, setPannerPosition} from "./lib/utils.js";
 import {WAVEFORMS_LIST, Oscillator} from "./lib/osc.js";
 import {Envelope} from "./lib/envelope.js";
 import {NotePlayer} from "./lib/notePlayer.js";
+import {Oscilloscope} from "./lib/oscilloscope.js";
 
 // **********************************************************************
 // GLOBALS
@@ -36,6 +37,7 @@ $(document).ready(function () {
   }
   const envelope = new Envelope();
   const player = new NotePlayer(oscillators, envelope);
+  const oscilloscope = new Oscilloscope(context, "scope-container", context.destination);
   let keyOctSwitch = 0;
 
   // TUNA EFFECTS
@@ -108,7 +110,7 @@ $(document).ready(function () {
   odLevel.connect(filter.input);
   filter.connect(tremolo.input);
   filterGain.connect(tremolo.input);
-  tremolo.connect(context.destination); // delay direct out
+  tremolo.connect(oscilloscope.analyser);
   tremolo.connect(delay);
 
   envelope.portamento = parseFloat($('#knob-portamento').attr('data-value')) / PORTAMENTO_FACTOR;
