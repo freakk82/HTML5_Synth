@@ -19,6 +19,6 @@
   "homepage": "https://github.com/freakk82/HTML5_Synth#readme",
   "devDependencies": {
     "http-server": "0.11.1",
-    "madge": "3.4.4"
+    "madge": "4.0.1"
   }
 }
